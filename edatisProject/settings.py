@@ -77,10 +77,10 @@ WSGI_APPLICATION = 'edatisProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'compteTest',
-        'USER' : 'mog',
-        'PASSWORD' : 'veumn8RY',
-        'HOST' : '51.91.2.27'
+        'NAME': 'test',
+        'USER' : 'postgres',
+        'PASSWORD' : 'admin',
+        'HOST' : '127.0.0.1'
     }
 }
 
