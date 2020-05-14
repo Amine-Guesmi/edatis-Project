@@ -18,5 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('dashbord.urls', namespace='dashbord')),
+    path('dashbord', include('dashbord.urls', namespace='edatis_dashbord')),
+    path('', include('accounts.urls', namespace='accounts')),
 ]

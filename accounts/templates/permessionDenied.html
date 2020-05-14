@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<title>Permission Denied</title>
+  <link href="{% static 'assets/css/permissionDenied.css' %}" rel="stylesheet">
+</head>
+<body>
+	<svg id="robot-error" viewbox="0 0 260 118.9" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<clippath id="white-clip">
+			<circle cx="130" cy="65" fill="#cacaca" id="white-eye" r="20"></circle>
+		</clippath>
+		<text class="error-text" id="text-s" y="106">
+			403
+		</text>
+	</defs>
+	<path class="alarm" d="M120.9 19.6V9.1c0-5 4.1-9.1 9.1-9.1h0c5 0 9.1 4.1 9.1 9.1v10.6" fill="#e62326"></path>
+	<use fill="black" x="-0.5px" xlink:href="#text-s" y="-1px"></use>
+	<use fill="#2b2b2b" xlink:href="#text-s"></use>
+	<g id="robot">
+		<g id="eye-wrap">
+			<use xlink:href="#white-eye"></use>
+			<circle class="eye" clip-path="url(#white-clip)" cx="130" cy="65" fill="#000" id="eyef" r="11" stroke="#2aa7cc" stroke-miterlimit="10" stroke-width="2"></circle>
+			<ellipse cx="130" cy="40" fill="#2b2b2b" id="white-eye" rx="18" ry="12"></ellipse>
+		</g>
+		<circle class="lightblue" cx="105" cy="32" id="tornillo" r="2.5"></circle>
+		<use x="50" xlink:href="#tornillo"></use>
+		<use x="50" xlink:href="#tornillo" y="60"></use>
+		<use xlink:href="#tornillo" y="60"></use>
+	</g></svg>
+	<h1>You are not allowed to enter here</h1>
+  <u><h2><a href="#" target="_blank">Wait for AZE </a></h2></u>
+	<h2><a href="mail:aze@edatis.com" target="_blank">Ask AZE !</a></h2>
+  <h2><a  style="color:red" href="{% url 'accounts:logout' %}" >logout</a></h2>
+  <script src="{% static 'assets/js/permessionDenied.js' %}"></script>
+</body>
+</html>

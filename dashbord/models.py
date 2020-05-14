@@ -7,3 +7,9 @@ class compte:
         self.bddname = bddname
         self.active = active
         self.inscriptiondate = inscriptiondate
+
+class compagne:
+    def __init__(self, id, name, finish):
+        self.id = id
+        self.name = name
+        self.finish = finish
