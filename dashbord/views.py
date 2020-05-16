@@ -5,6 +5,7 @@ from accounts.decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 import logging
+import subprocess
 #import models
 from .models import compte, compagne
 #Spark
@@ -22,12 +23,18 @@ logger = logging.getLogger(__name__)
 @login_required(login_url='accounts:login')
 @allowed_users(allowed_roles=['admin', 'DataAnalyst'])
 def dashbord(request):
-    comptesJson = spark.read.json("/dataLake/hub/compte").toJSON().map(lambda j: json.loads(j)).collect()
+    df = spark.read.json("/dataLake/hub/compte")
+    comptesJson = df.toJSON().map(lambda j: json.loads(j)).collect()
     comptes = []
     for jsonTranform in comptesJson:
         comptes.append(compte(jsonTranform['id'],  jsonTranform['name'], jsonTranform['bddname'], jsonTranform['active'], jsonTranform['dateinscription']))
+    content = subprocess.Popen(["hdfs", "dfs", "-du", "-h", "-s", "/dataLake"], stdout=subprocess.PIPE)
+    for line in content.stdout:
+        aux = line.decode('utf-8')
     context = {
-        'comptes' :  comptes
+        'comptes' :  comptes,
+        'numberActifClient' : df.where(df.active == True).count(),
+        'sizeDataLake' : aux[:aux.find('G')]
     }
     return render(request, 'dashbord.html', context)
 
@@ -49,7 +56,6 @@ def allCompagne(request, bdname):
 
 def allUsers(request):
     users = User.objects.all()
-    print(users)
     context = {
         'users' : users
     }

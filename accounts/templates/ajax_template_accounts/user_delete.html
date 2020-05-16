@@ -1,0 +1,20 @@
+<div class="col-md-12">
+		<form data-url="{% url 'accounts:user_delete' user.id %}" method="post" class="delete-form">
+      {% csrf_token %}
+			<div class="card">
+				<div class="card-header card-header-rose card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">person_add</i>
+					</div>
+					<h4 class="card-title"><strong>Register Form</strong></h4>
+				</div>
+				<div class="modal-body">
+          <p class="lead">Are you sure , you want to delete <strong>{{user.username}}</strong></p>
+				</div>
+				<div class="modal-footer text-right">
+					<button class="btn btn-secondary" data-dismiss="modal" type="button">close</button>
+					<button class="btn btn-danger type="submit">Remove User</button>
+				</div>
+			</div>
+		</form>
+	</div>

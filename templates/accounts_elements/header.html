@@ -1,0 +1,25 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top text-white">
+  <div class="container">
+    <div class="navbar-wrapper">
+      <a class="navbar-brand" href="javascript:;">
+      <h3><b>Edatis analytics</b></h3></a>
+    </div><button aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="navbar-toggler-icon icon-bar"></span> <span class="navbar-toggler-icon icon-bar"></span> <span class="navbar-toggler-icon icon-bar"></span></button>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts:register' %}"><i class="material-icons">person_add</i> Register</a>
+        </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="{% url 'accounts:login' %}"><i class="material-icons">fingerprint</i> Login</a>
+        </li>
+        {% if user.is_authenticated and request.user.groups.all.0.name ==  'waiter' %}
+          <li class="nav-item ">
+            <a class="nav-link" href="{% url 'accounts:logout' %}"><i class="fa fa-power-off"></i> Logout</a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- End Navbar -->

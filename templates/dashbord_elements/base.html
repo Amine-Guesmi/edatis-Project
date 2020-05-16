@@ -17,7 +17,7 @@
 	<div class="wrapper">
 		<div class="sidebar" data-background-color="black" data-color="rose" data-image="{% static 'assets/img/sidebar-1.jpg' %}">
 			<div class="logo">
-				<a class="simple-text logo-mini" href="http://www.creative-tim.com">CT</a> <a class="simple-text logo-normal" href="http://www.creative-tim.com">Creative Tim</a>
+				<a class="simple-text logo-mini" href="http://www.creative-tim.com">EA</a> <a class="simple-text logo-normal" href="http://www.creative-tim.com">Edatis Analytics</a>
 			</div>
 			<div class="sidebar-wrapper">
 				<div class="user">
@@ -40,9 +40,19 @@
 					</div>
 				</div>
 				<ul class="nav">
+					{% if request.user.is_staff %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'edatis_dashbord:allUsers' %}"><i class="material-icons">dashboard</i>
+							<p>Admin Dashbord</p></a>
+						</li>
+					{% endif %}
 					<li class="nav-item">
-						<a class="nav-link" href="../examples/dashboard.html"><i class="material-icons">dashboard</i>
-						<p>Dashboard</p></a>
+						<a class="nav-link" href="{% url 'edatis_dashbord:dashbord' %}"><i class="material-icons">dashboard</i>
+						<p>Dashboard
+							{% if request.user.is_staff %}
+								DataAnalyst
+							{% endif %}
+						</p></a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="collapse" href="#pagesExamples"><i class="material-icons">image</i>
@@ -229,32 +239,7 @@
           {% block body %}{% endblock %}
 				</div>
 			</div>
-			<footer class="footer">
-				<div class="container-fluid">
-					<nav class="float-left">
-						<ul>
-							<li>
-								<a href="https://www.creative-tim.com/">Creative Tim</a>
-							</li>
-							<li>
-								<a href="https://www.creative-tim.com/presentation">About Us</a>
-							</li>
-							<li>
-								<a href="https://www.creative-tim.com/blog">Blog</a>
-							</li>
-							<li>
-								<a href="https://www.creative-tim.com/license">Licenses</a>
-							</li>
-						</ul>
-					</nav>
-					<div class="copyright float-right">
-						&copy;
-						<script>
-						        document.write(new Date().getFullYear())
-						</script>, made with <i class="material-icons">favorite</i> by <a href="https://www.creative-tim.com/" target="_blank">Creative Tim</a> for a better web.
-					</div>
-				</div>
-			</footer>
+			{% include "footer.html" %}
 		</div>
 	</div><!--   Core JS Files   -->
 	<script src="{% static 'assets/js/core/jquery.min.js' %}"></script>
@@ -330,5 +315,6 @@
      }
 	</script>
 	<script src="{% static 'assets/js/chart-dashbord.js' %}"></script>
+	<script src="{% static 'assets/js/ajax/plugin.js' %}"></script>
 </body>
 </html>
