@@ -12,6 +12,7 @@
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet"><!-- CSS Files -->
 	<link href="{% static 'assets/css/material-dashboard.css' %}" rel="stylesheet"><!-- CSS Just for demo purpose, don't include it in your project -->
 	<link href="{% static 'assets/demo/demo.css' %}" rel="stylesheet">
+	<link href="{% static 'assets/css/errorPage.css' %}" rel="stylesheet">
 </head>
 <body class="">
 	<div class="wrapper">
@@ -21,9 +22,9 @@
 			</div>
 			<div class="sidebar-wrapper">
 				<div class="user">
-					<div class="photo"><img src="{% static 'assets/img/faces/avatar.jpg' %}"></div>
+					<div class="photo"><img src="{% static 'assets/img/faces/card-profile1-square.jpg' %}"></div>
 					<div class="user-info">
-						<a class="username" data-toggle="collapse" href="#collapseExample"><span>Tania Andrew <b class="caret"></b></span></a>
+						<a class="username" data-toggle="collapse" href="#collapseExample"><span>{{request.user.username}} <b class="caret"></b></span></a>
 						<div class="collapse" id="collapseExample">
 							<ul class="nav">
 								<li class="nav-item">
@@ -227,7 +228,7 @@
 								<p class="d-lg-none d-md-block">Account</p></a>
 								<div aria-labelledby="navbarDropdownProfile" class="dropdown-menu dropdown-menu-right">
 									<a class="dropdown-item" href="#">Profile</a> <a class="dropdown-item" href="#">Settings</a>
-									<div class="dropdown-divider"></div><a class="dropdown-item" href="#">Log out</a>
+									<div class="dropdown-divider"></div><a class="dropdown-item" href="/logout">Log out</a>
 								</div>
 							</li>
 						</ul>
@@ -302,6 +303,9 @@
 	<script src="{% static 'assets/js/material-dashboard.js' %}" type="text/javascript"></script>
   <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 
+	<script src="{% static 'assets/js/errorPage.js' %}" type="text/javascript"></script>
+	<!--404 page js -->
+
 	<script src="{% static 'assets/demo/demo.js' %}"></script>
 	<script src="{% static 'assets/js/main.js' %}"></script>
 	<script>
@@ -316,5 +320,6 @@
 	</script>
 	<script src="{% static 'assets/js/chart-dashbord.js' %}"></script>
 	<script src="{% static 'assets/js/ajax/plugin.js' %}"></script>
+	{% block div %}{% endblock %}
 </body>
 </html>

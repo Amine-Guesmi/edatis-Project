@@ -68,6 +68,47 @@
     </div>
 </div>
 <div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons">pie_chart</i>
+        </div>
+        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small></h4>
+      </div>
+      <div class="card-body">
+        <canvas height="450" id="doughnut-chart" width="800"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons">pie_chart</i>
+        </div>
+        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small></h4>
+      </div>
+      <div class="card-body">
+        <canvas height="450" id="doughnut-chart-clic" width="800"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons">pie_chart</i>
+        </div>
+        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small></h4>
+      </div>
+      <div class="card-body">
+        <canvas height="450" id="doughnut-chart-open" width="800"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
   <div class="col-md-12">
     <div class="card">
       <div class="card-header card-header-primary card-header-icon">
@@ -143,4 +184,131 @@
   </div>
   <!-- end col-md-12 -->
 </div>
+{% endblock %}
+{% block div %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+ <script>
+   // chart for pc tablette tel open
+     new Chart(document.getElementById("doughnut-chart"), {
+     type: 'doughnut',
+     data: {
+       labels: ["pc", "Tablette", "telephone"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#0AB0BF", "#8e5ea2","#3cba9f"],
+           data: [1254, 4584 ,4581]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+     }
+   });
+     //chart for clic
+     new Chart(document.getElementById("doughnut-chart-clic"), {
+     type: 'doughnut',
+     data: {
+       labels: ["clic", "others"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#1e272e", "#F4D03F"],
+           data: [2478,5267]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+     }
+   });
+     //chart for open
+     new Chart(document.getElementById("doughnut-chart-open"), {
+     type: 'doughnut',
+     data: {
+       labels: ["open", "others"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#1b3e28", "#E74C3C "],
+           data: [2478,5267]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+
+     }
+   });
+   // chart final
+   new Chart(document.getElementById("line-chart"), {
+ type: 'line',
+ data: {
+   labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
+   datasets: [{
+       data: [282,350,411,502,635,1205,3201,4523,5482,6584],
+       label: "sent",
+       borderColor: "#3e95cd",
+       fill: false
+     }, {
+       data: [282,350,411,502,635,809,947,1402,3700,5267],
+       label: "open",
+       borderColor: "#8e5ea2",
+       fill: false
+     }, {
+       data: [168,170,178,190,203,276,408,547,675,734],
+       label: "clickers",
+       borderColor: "#3cba9f",
+       fill: false
+     }, {
+       data: [40,20,10,16,24,38,74,167,508,784],
+       label: "Bounces",
+       borderColor: "#e8c3b9",
+       fill: false
+     }, {
+       data: [6,3,2,2,7,26,82,172,312,433],
+       label: "unsubscribes",
+       borderColor: "#c45850",
+       fill: false
+     }
+   ]
+ },
+ options: {
+   title: {
+     display: true,
+     text: 'World population per region (in millions)'
+   }
+ }
+});
+   // stat
+     new Chart(document.getElementById("doughnut-chart-stat"), {
+     type: 'doughnut',
+     data: {
+       labels: ["Bounced", "Abouti", "En attente"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#E74C3C", "#148F77", "#F1C40F"],
+           data: [2478,5267,4523]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+     }
+   });
+ </script>
 {% endblock %}

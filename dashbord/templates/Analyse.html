@@ -1,0 +1,415 @@
+{% extends 'dashbord_elements/base.html' %}
+{% block body %}
+<div class="row">
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-warning card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">weekend</i>
+					</div>
+					<p class="card-category">Bookings</p>
+					<h3 class="card-title">184</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons text-danger">warning</i> <a href="#pablo">Get More Space...</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-rose card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">equalizer</i>
+					</div>
+					<p class="card-category">Website Visits</p>
+					<h3 class="card-title">75.521</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">local_offer</i> Tracked from Google Analytics
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-success card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">store</i>
+					</div>
+					<p class="card-category">Revenue</p>
+					<h3 class="card-title">$34,245</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">date_range</i> Last 24 Hours
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-info card-header-icon">
+					<div class="card-icon">
+						<i class="fa fa-server"></i>
+					</div>
+					<p class="card-category">Followers</p>
+					<h3 class="card-title">+245</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">update</i> Just Updated
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-dark">
+					<center>
+						<h4><strong>Sent</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-dark">6,330 (80.25%)</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-info">
+					<center>
+						<h4><strong>Deliverabilitty</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-info">6,330</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-secondary">
+					<center>
+						<h4><strong>Open rate</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-secondary">6,330</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-success">
+					<center>
+						<h4><strong>Clicks rate</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-success">6,330</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-warning">
+					<center>
+						<h4><strong>Soft Bounce</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-warning">6,330</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-danger">
+					<center>
+						<h4><strong>Hard Bounce</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-danger">6,330</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-header card-header-icon card-header-rose">
+					<div class="card-icon">
+						<i class="material-icons">pie_chart</i>
+					</div>
+					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small></h4>
+				</div>
+				<div class="card-body">
+					<canvas height="450" id="doughnut-chart" width="800"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-header card-header-icon card-header-rose">
+					<div class="card-icon">
+						<i class="material-icons">pie_chart</i>
+					</div>
+					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small></h4>
+				</div>
+				<div class="card-body">
+					<canvas height="450" id="doughnut-chart-clic" width="800"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="card">
+				<div class="card-header card-header-icon card-header-rose">
+					<div class="card-icon">
+						<i class="material-icons">pie_chart</i>
+					</div>
+					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small></h4>
+				</div>
+				<div class="card-body">
+					<canvas height="450" id="doughnut-chart-open" width="800"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-header card-header-icon card-header-info">
+					<div class="card-icon">
+						<i class="material-icons">timeline</i>
+					</div>
+					<h4 class="card-title">Coloured Line Chart <small>- Rounded</small></h4>
+				</div>
+				<div class="card-body">
+					<canvas id="line-chart"></canvas>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="card">
+				<div class="card-header card-header-icon card-header-info">
+					<div class="card-icon">
+						<i class="material-icons">pie_chart</i>
+					</div>
+					<h4 class="card-title">Coloured Line Chart <small>- Rounded</small></h4>
+				</div>
+				<div class="card-body">
+					<canvas id="doughnut-chart-stat"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card">
+				<div class="card-header card-header-primary card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">assignment</i>
+					</div>
+					<h4 class="card-title">Messages from 01-27-2016 to 02-25-2016</h4>
+				</div>
+				<div class="card-body">
+					<div class="toolbar">
+						<!--        Here you can write extra buttons/actions for the toolbar              -->
+					</div>
+					<div class="material-datatables">
+						<table cellspacing="0" class="table table-striped table-no-bordered table-hover" id="datatables" style="width:100%" width="100%">
+							<thead>
+								<tr>
+									<th>Status</th>
+									<th>Date</th>
+									<th>Subjest</th>
+									<th>From</th>
+									<th>To</th>
+									<th>Tags</th>
+									<th class="disabled-sorting text-right">Actions</th>
+								</tr>
+							</thead>
+							<tfoot>
+								<tr>
+									<th>Status</th>
+									<th>Date</th>
+									<th>Subjest</th>
+									<th>From</th>
+									<th>To</th>
+									<th>Tags</th>
+									<th class="disabled-sorting text-right">Actions</th>
+								</tr>
+							</tfoot>
+							<tbody>
+								<tr>
+									<td><button class="btn btn-info" type="button">Opened</button></td>
+									<td>02-25-2016 06:26:16 pm</td>
+									<td>Confirm Your Upcomi...</td>
+									<td>test@test.com</td>
+									<td>test2@test.com</td>
+									<td>Confirmation SMTP</td>
+									<td class="text-right"><button class="btn btn-warning" type="button">detail</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div><!-- end content-->
+			</div><!--  end card  -->
+		</div>
+	</div>
+{% endblock %}
+{% block div %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
+ <script>
+   // chart for pc tablette tel open
+     new Chart(document.getElementById("doughnut-chart"), {
+     type: 'doughnut',
+     data: {
+       labels: ["pc", "Tablette", "telephone"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#0AB0BF", "#8e5ea2","#3cba9f"],
+           data: [{{Analyse_obj.Desktop_open}},{{Analyse_obj.tablet_open}},{{Analyse_obj.tel_open}}]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+     }
+   });
+     //chart for clic
+     new Chart(document.getElementById("doughnut-chart-clic"), {
+     type: 'doughnut',
+     data: {
+       labels: ["clic", "others"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#1e272e", "#F4D03F"],
+           data: [2478,5267]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+     }
+   });
+     //chart for open
+     new Chart(document.getElementById("doughnut-chart-open"), {
+     type: 'doughnut',
+     data: {
+       labels: ["open", "others"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#1b3e28", "#E74C3C "],
+           data: [2478,5267]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+
+     }
+   });
+   // chart final
+   new Chart(document.getElementById("line-chart"), {
+ type: 'line',
+ data: {
+   labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
+   datasets: [{
+       data: [282,350,411,502,635,1205,3201,4523,5482,6584],
+       label: "sent",
+       borderColor: "#3e95cd",
+       fill: false
+     }, {
+       data: [282,350,411,502,635,809,947,1402,3700,5267],
+       label: "open",
+       borderColor: "#8e5ea2",
+       fill: false
+     }, {
+       data: [168,170,178,190,203,276,408,547,675,734],
+       label: "clickers",
+       borderColor: "#3cba9f",
+       fill: false
+     }, {
+       data: [40,20,10,16,24,38,74,167,508,784],
+       label: "Bounces",
+       borderColor: "#e8c3b9",
+       fill: false
+     }, {
+       data: [6,3,2,2,7,26,82,172,312,433],
+       label: "unsubscribes",
+       borderColor: "#c45850",
+       fill: false
+     }
+   ]
+ },
+ options: {
+   title: {
+     display: true,
+     text: 'World population per region (in millions)'
+   }
+ }
+});
+   // stat
+     new Chart(document.getElementById("doughnut-chart-stat"), {
+     type: 'doughnut',
+     data: {
+       labels: ["Bounced", "Abouti", "En attente"],
+       datasets: [
+         {
+           label: "Population (millions)",
+           backgroundColor: ["#E74C3C", "#148F77", "#F1C40F"],
+           data: [2478,5267,4523]
+         }
+       ]
+     },
+     options: {
+       title: {
+         display: true,
+         text: 'Predicted world population (millions) in 2050'
+       }
+     }
+   });
+ </script>
+ <script>
+   // navigation active
+   const currentLocation = location.href;
+   const menuItem = document.querySelectorAll('a.nav-link');
+   const navItem = document.querySelectorAll('li.nav-item');
+   for(let i = 0; i<navItem.length; i++){
+     if(menuItem[i].href == currentLocation){
+       navItem[i].className = "active"      }
+   }
+ </script>
+{% endblock %}

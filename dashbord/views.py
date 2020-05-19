@@ -7,7 +7,7 @@ from django.contrib import messages
 import logging
 import subprocess
 #import models
-from .models import compte, compagne
+from .models import compte, compagne, Analyse
 #Spark
 import findspark
 import pyspark
@@ -50,10 +50,12 @@ def allCompagne(request, bdname):
     for comp in compagnesJson:
         compagnes.append(compagne(comp['id'], comp['name'], comp['finish']))
     context = {
-        'compagnes' : compagnes
+        'compagnes' : compagnes,
+        'bdname' : bdname
     }
     return render(request, 'allcompagne.html', context)
-
+@login_required(login_url='accounts:login')
+@allowed_users(allowed_roles=['admin'])
 def allUsers(request):
     users = User.objects.all()
     context = {
@@ -71,6 +73,19 @@ def activateWaiter(request, username):
     user_group.save()
     messages.success(request, 'User updated successfully to DataAnalyst')
     return redirect('edatis_dashbord:allUsers')
+
+def AnalysePerCompagne(request, bdname, mail_sending_id):
+
+    Analyse_obj = Analyse()
+    #open partie
+    df = spark.read.json("/dataLake/"+bdname+"/open")
+    Analyse_obj.tablet_open = df.select("tablet","mail_sending_id").where("tablet=1 AND mail_sending_id="+str(mail_sending_id)).count()
+    Analyse_obj.tel_open    = df.select("mobile", "mail_sending_id").where("mobile=1 AND mail_sending_id="+str(mail_sending_id)).count()
+    Analyse_obj.Desktop_open= df.select("desktop", "mail_sending_id").where("desktop=1 AND mail_sending_id="+str(mail_sending_id)).count()
+    context = {
+        'Analyse_obj' : Analyse_obj
+    }
+    return render(request, 'Analyse.html', context)
 
 def test(request):
     return render(request, 'error.html')

@@ -4,7 +4,10 @@ from django.shortcuts import redirect
 def unauthenticated_user(view_func):
     def wrapper_func(request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect('edatis_dashbord:dashbord')
+            if request.user.groups.all()[0].name in ['admin']:
+                return redirect('edatis_dashbord:allUsers')
+            else:
+                return redirect('edatis_dashbord:dashbord')
 
         return view_func(request, *args, **kwargs)
 
@@ -21,7 +24,7 @@ def allowed_users(allowed_roles=[]):
             elif group in ['waiter']:
                 return redirect('accounts:error403')
             else:
-                return HttpResponse('You are not authorized to view this page')
+                return redirect('edatis_dashbord:dashbord')
         return wrapper_func
     return decorator
 

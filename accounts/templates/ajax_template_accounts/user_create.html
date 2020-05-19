@@ -8,6 +8,7 @@
 					</div>
 					<h4 class="card-title"><strong>Register Form</strong></h4>
 				</div>
+				<br>
 				<div class="card-body">
 					<div class="form-group bmd-form-group">
 						<label class="bmd-label-floating" for="exampleEmail">Username *</label>
@@ -38,10 +39,16 @@
 					<div class="category form-category">
 						* Required fields
 					</div>
+					<br>
+					<div class="alert alert-danger" id="alert-errors" style="display : none" >
+						 <button aria-label="Close" class="close" data-dismiss="alert" type="button"><i class="material-icons">close</i></button>
+						 <div class="show-errors">
+						 </div>
+					</div>
 				</div>
 				<div class="modal-footer text-right">
-					<button class="btn btn-secondary" data-dismiss="modal" type="button">close</button>
-					<button class="btn btn-rose" type="submit">Add User</button>
+					<button class="btn" style="background: linear-gradient(60deg, #26c6da, #00acc1);color : #FFF" data-dismiss="modal" type="button"><strong>close</strong></button>&nbsp;
+					<button class="btn btn-rose" type="submit"><strong>Add User</strong></button>
 				</div>
 			</div>
 		</form>

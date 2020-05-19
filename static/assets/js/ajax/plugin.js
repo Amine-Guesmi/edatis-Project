@@ -24,8 +24,22 @@ $(document).ready(function(){
           if (data.form_is_valid){
               $('#users-table tbody').html(data.users_list);
               $('#modal-user').modal('hide');
+              $.notify({
+       					icon: 'add_alert',
+       					title: '<strong>Succesfuly</strong>',
+       					message: 'Operation done Succesfuly'
+       					},
+       				{
+       					type: 'success'
+       				});
           }else{
               $('#modal-user .modal-content').html(data.html_form);
+              var errors = ""
+              for(var key in data.err_msg){
+                    errors += "<span><b>"+ key +"</b>"+data.err_msg[key][0]+"</span>";
+              }
+              $('#alert-errors').css("display", "block");
+              $('#alert-errors .show-errors').html(errors);
           }
         }
       });
@@ -40,4 +54,7 @@ $(document).ready(function(){
   // delete
   $("#users-table").on("click", ".show-form-delete", ShowForm);
   $("#modal-user").on("submit", ".delete-form", SaveForm);
+  //activate
+  $("#users-table").on("click", ".show-form-activate", ShowForm);
+  $("#modal-user").on("submit", ".activate-form", SaveForm);
 });

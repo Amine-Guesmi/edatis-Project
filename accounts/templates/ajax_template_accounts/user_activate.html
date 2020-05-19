@@ -1,19 +1,19 @@
 <div class="col-md-12">
-		<form data-url="{% url 'accounts:user_delete' user.id %}" method="post" class="delete-form">
+		<form data-url="{% url 'accounts:user_delete' user.id %}" method="post" class="activate-form">
       {% csrf_token %}
 			<div class="card">
 				<div class="card-header card-header-rose card-header-icon">
 					<div class="card-icon">
 						<i class="material-icons">account_circle</i>
 					</div>
-					<h4 class="card-title"><strong>Delete User</strong></h4>
+					<h4 class="card-title"><strong>Activate User</strong></h4>
 				</div>
 				<div class="modal-body">
-          <p class="lead">Are you sure , you want to delete <strong>{{user.username}}</strong></p>
+          <p class="lead">Are you sure , you want to Change <strong>{{user.username}}</strong> Role</p>
 				</div>
 				<div class="modal-footer text-right">
 					<button class="btn" style="background: linear-gradient(60deg, #66bb6a, #43a047);" data-dismiss="modal" type="button"><strong>close</strong></button>&nbsp;
-					<button class="btn btn-danger type="submit"><strong>Remove User</strong></button>
+					<button class="btn btn-danger type="submit"><strong>Activate User</strong></button>
 				</div>
 			</div>
 		</form>

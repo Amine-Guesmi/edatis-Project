@@ -7,7 +7,7 @@
       <td>{{ user.groups.all.0 }}</td>
       <td class="td-actions text-right">
         {% if user.groups.all.0.name ==  'waiter' %}
-          <button type="button" rel="tooltip" class="btn btn-danger btn-round">
+          <button type="button" data-url="{% url 'accounts:user_activate' user.id %}" class="btn btn-danger btn-round show-form-activate">
             <i class="material-icons">check_circle</i>
           </button>
         {% endif %}

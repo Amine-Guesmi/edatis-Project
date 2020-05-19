@@ -13,3 +13,11 @@ class compagne:
         self.id = id
         self.name = name
         self.finish = finish
+
+class Analyse:
+    def __init__(self, tablet_open, tel_open, Desktop_open):
+        self.tablet_open = tablet_open
+        self.tel_open = tel_open
+        self.Desktop_open = Desktop_open
+    def __init__(self):
+        pass

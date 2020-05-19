@@ -7,7 +7,7 @@ app_name = 'dashbord'
 urlpatterns = [
     path('', views.dashbord, name='dashbord'),
     path('<str:bdname>/', views.allCompagne, name='allCompagne'),
+    path('<str:bdname>/<int:mail_sending_id>', views.AnalysePerCompagne, name='AnalysePerCompagne'),
     path('users', views.allUsers, name='allUsers'),
-    path('users/activate/<str:username>', views.activateWaiter, name='activateWaiter'),
     path('test', views.test, name='test'),
 ]
