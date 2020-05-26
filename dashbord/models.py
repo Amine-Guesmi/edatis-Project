@@ -19,5 +19,6 @@ class Analyse:
         self.tablet_open = tablet_open
         self.tel_open = tel_open
         self.Desktop_open = Desktop_open
+        self.SumAllDevices = self.tablet_open + self.tel_open + self.Desktop_open
     def __init__(self):
         pass

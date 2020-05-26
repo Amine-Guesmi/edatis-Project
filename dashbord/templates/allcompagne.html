@@ -17,35 +17,38 @@
             <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
               <thead>
                 <tr>
-                  <th>Mail sending Id  Id</th>
+                  <th>Status</th>
+                  <th>Mail sending Id</th>
                   <th>Compagne Name</th>
-                  <th>Finish</th>
-                  <th class="disabled-sorting text-right">Actions</th>
+                  <th class="disabled-sorting text-right">Analyse</th>
                 </tr>
               </thead>
               <tfoot>
                 <tr>
+                  <th>Status</th>
                   <th>Mail sending Id</th>
                   <th>Compagne Name</th>
-                  <th>Finish</th>
-                  <th class="disabled-sorting text-right">Actions</th>
+                  <th class="disabled-sorting text-right">Analyse</th>
                 </tr>
               </tfoot>
               <tbody>
                 {% for compagne in compagnes %}
                     <tr>
-                      <td>{{compagne.id}}</td>
-                      <td>{{compagne.name}}</td>
-                      <td>
+                    <td>
                         {% if compagne.finish %}
-                          <span style="color : green"><strong>Finish</strong></span>
+                          <span class="badge badge-success">Finich</span>
                         {% else %}
-                          <span style="color : red"><strong>Not Finish</strong></span>
+                          <span class="badge badge-danger">Not Finish</span>
                         {% endif %}
                       </td>
+                      <td>{{compagne.id}}</td>
+                      <td>{{compagne.name}}</td>
                       <td class="text-right">
-                        <a href="{% url 'dashbord:AnalysePerCompagne' bdname compagne.id %}" type="button" rel="tooltip" class="btn btn-info btn-round" style="color : white">
-                          <i  class="material-icons">assessment</i> <strong>Analyse</strong>
+                        <a  type="button" href="{% url 'dashbord:AnalysePerCompagne' bdname compagne.id %}"  rel="tooltip" class="btn  btn-round" style="color : white; background : #21618C">
+                          <i  class="material-icons">assessment</i> <strong>Contact</strong>
+                        </a>
+                        <a  type="button" href=""  rel="tooltip" class="btn btn-info btn-round" style="color : white">
+                          <i  class="material-icons">assessment</i> <strong> Compagne</strong>
                         </a>
                       </td>
                     </tr>

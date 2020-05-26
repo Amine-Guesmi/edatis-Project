@@ -45,6 +45,19 @@ $(document).ready(function(){
       });
       return false;
   };
+
+  var changeCharte = function(){
+    var btn = $(this);
+    $.ajax({
+      url : btn.attr('data-url'),
+      type : 'get',
+      dataType : 'json',
+      success: function(data){
+        alert("hello");
+      }
+    });
+  };
+
   // Create
   $(".show-form").click(ShowForm);
   $("#modal-user").on("submit", ".create-form", SaveForm);
@@ -57,4 +70,6 @@ $(document).ready(function(){
   //activate
   $("#users-table").on("click", ".show-form-activate", ShowForm);
   $("#modal-user").on("submit", ".activate-form", SaveForm);
+
+ $("#testets").on("submit", "#changeChart", changeCharte);
 });

@@ -1,4 +1,5 @@
 {% extends 'dashbord_elements/base.html' %}
+{% load static %}
 {% block body %}
 <div class="row">
     <div class="col-lg-3 col-md-6 col-sm-6">
@@ -125,53 +126,43 @@
           <table id="datatables" class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
             <thead>
               <tr>
+                <th>Status</th>
                 <th>id</th>
                 <th>Name</th>
                 <th>Database Name</th>
-                <th>Active</th>
                 <th>Inscription date</th>
                 <th class="disabled-sorting text-right">Actions</th>
               </tr>
             </thead>
             <tfoot>
               <tr>
+                <th>Status</th>
                 <th>id</th>
                 <th>Name</th>
                 <th>Database Name</th>
-                <th>Active</th>
                 <th>Inscription date</th>
                 <th class="text-right">Actions</th>
               </tr>
             </tfoot>
             <tbody>
-              <tr>
-                <td>Tiger Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011/04/25</td>
-                <td class="text-right">
-                  <a href="#" class="btn btn-link btn-info btn-just-icon like"><i class="material-icons">favorite</i></a>
-                  <a href="#" class="btn btn-link btn-warning btn-just-icon edit"><i class="material-icons">dvr</i></a>
-                  <a href="#" class="btn btn-link btn-danger btn-just-icon remove"><i class="material-icons">close</i></a>
-                </td>
-              </tr>
               {% for compte in comptes %}
-                  <tr>
+                  <tr> 
+                    <td>
+                      {% if compte.active %}
+                        <span class="badge badge-success">Active</span>
+                      {% else %}
+                        <span class="badge badge-danger">Not Active</span>
+                      {% endif %}
+                    </td>
                     <td>{{compte.id}}</td>
                     <td>{{compte.name}}</td>
                     <td>{{compte.bddname}}</td>
-                    <td>
-                        {% if compte.active %}
-                          <i class="material-icons" title="Active" style="color : green">check_circle_outline</i>
-                        {% else %}
-                          <i class="material-icons" title="Not Active" style="color : red">check_circle_outline</i>
-                        {% endif %}
-                    </td>
                     <td>{{compte.inscriptiondate}}</td>
-                    <td class="text-right">
-                      <a href="{% url 'edatis_dashbord:allCompagne' compte.bddname %}" class="btn btn-link btn-info btn-just-icon edit"><i class="material-icons">assignment</i></a>
-                    </td>
+                      <td class="text-right">
+                        <a href="{% url 'edatis_dashbord:allCompagne' compte.bddname %}" type="button" rel="tooltip" class="btn btn-info btn-round" style="color : white">
+                          <i  class="material-icons">assessment</i> <strong> Compagnes</strong>
+                        </a>
+                      </td>
                   </tr>
               {% endfor %}
             </tbody>
