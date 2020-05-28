@@ -75,9 +75,9 @@
 						<h4><strong>Number Of Open</strong></h4>
 					</center>
 				</div>
-				<div class="card-body">
+				<div class="card-body" >
 					<center>
-						<h3 class="card-title text-dark">{{Analyse_obj.SumAllDevices}}</h3>
+						<h3  class="card-title text-dark" id="allOpen">{{Analyse_obj.SumAllDevices}}</h3>
 					</center>
 				</div>
 			</div>
@@ -91,7 +91,7 @@
 				</div>
 				<div class="card-body">
 					<center>
-						<h3 class="card-title text-info">{{SumAllDevicesClic}}</h3>
+						<h3 class="card-title text-info" id="allClic">{{SumAllDevicesClic}}</h3>
 					</center>
 				</div>
 			</div>
@@ -160,10 +160,10 @@
 					<div class="card-icon">
 						<i class="material-icons">pie_chart</i>
 					</div>
-					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"> </h4>
+					<h4 class="card-title">Desktop Analyse <small>- Pie Chart</small><img id="loading-desktop" class="loading" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"> </h4>
 				</div>
-				<div class="card-body">
-					<canvas height="450" id="doughnut-chart" width="800"></canvas>
+				<div class="card-body" id="desktop_container">
+					<canvas height="450" id="desktop_chart" width="800"></canvas>
 				</div>
 				<div id="testets" class="card-footer">
             <div  class="form-group" style="width: 37%">
@@ -180,9 +180,7 @@
               </select>
             </div>
 						&nbsp;
-						<form data-url="{% url 'edatis_dashbord:updateGraph' {{mail_sending_id}},type,mode %}" method="post" id="changeChart">
-								<button id="btn-Desktop" type="submit" class="btn btn-rose">load</button>
-						</form>
+						<button id="btn-Desktop" type="button" class="btn btn-rose btn-load">load</button>
       </div>
 			</div>
 		</div>
@@ -192,27 +190,27 @@
 					<div class="card-icon">
 						<i class="material-icons">pie_chart</i>
 					</div>
-					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+					<h4 class="card-title">Tablet Analyse <small>- Pie Chart</small><img id="loading-tablet" class="loading" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
 				</div>
-				<div class="card-body">
-					<canvas height="450" id="doughnut-chart-clic" width="800"></canvas>
+				<div class="card-body" id="tablet_container">
+					<canvas height="450" id="tablet_chart" width="800"></canvas>
 				</div>
 				<div class="card-footer">
-            <div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>open</option>
-                <option value="2">clic</option>
+            <div  class="form-group" style="width: 37%">
+              <select id="type-tablet" class="custom-select">
+                <option value="open" selected>open</option>
+                <option value="clic">clic</option>
               </select>
             </div>
 						&nbsp;
 						<div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>Normale</option>
-                <option value="2">Predictive</option>
+              <select id="mode-tablet" class="custom-select">
+                <option value="Normale" selected>Normale</option>
+                <option value="Predictive">Predictive</option>
               </select>
             </div>
 						&nbsp;
-            <button id="btn-tablet" type="button" class="btn btn-rose">load</button>
+            <button id="btn-tablet" type="button" class="btn btn-rose btn-load">load</button>
       </div>
 			</div>
 		</div>
@@ -222,90 +220,60 @@
 					<div class="card-icon">
 						<i class="material-icons">pie_chart</i>
 					</div>
-					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+					<h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img id="loading-mobile" class="loading" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
 				</div>
-				<div class="card-body">
-					<canvas height="450" id="doughnut-chart-open" width="800"></canvas>
+				<div class="card-body" id="mobile_container" >
+					<canvas height="450" id="mobile_chart" width="800"></canvas>
 				</div>
 				<div class="card-footer">
             <div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>open</option>
-                <option value="2">clic</option>
+              <select id="type-mobile" class="custom-select">
+                <option value="open" selected>open</option>
+                <option value="clic">clic</option>
               </select>
             </div>
 						&nbsp;
 						<div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>Normale</option>
-                <option value="2">Predictive</option>
+              <select id="mode-mobile" class="custom-select">
+                <option value="Normale" selected>Normale</option>
+                <option value="Predictive">Predictive</option>
               </select>
             </div>
 						&nbsp;
-            <button id="btn-mobile" type="button" class="btn btn-rose">load</button>
+            <button id="btn-mobile" type="button" class="btn btn-rose btn-load">load</button>
       </div>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6">
+		<div class="col-md-6" style="margin : 0 auto">
 			<div class="card">
-				<div class="card-header card-header-icon card-header-info">
-					<div class="card-icon">
-						<i class="material-icons">timeline</i>
-					</div>
-					<h4 class="card-title">Coloured Line Chart <small>- Rounded</small></h4>
-				</div>
-				<div class="card-body">
-					<canvas id="line-chart"></canvas>
-				</div>
-				<div class="card-footer">
-            <div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>open</option>
-                <option value="2">clic</option>
-              </select>
-            </div>
-						&nbsp;
-						<div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>Normale</option>
-                <option value="2">Predictive</option>
-              </select>
-            </div>
-						&nbsp;
-            <button type="button" class="btn btn-rose">load</button>
-        </div>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="card">
-				<div class="card-header card-header-icon card-header-info">
+				<div class="card-header card-header-icon card-header-rose">
 					<div class="card-icon">
 						<i class="material-icons">pie_chart</i>
 					</div>
-					<h4 class="card-title">Coloured Line Chart <small>- Rounded</small><img src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+					<h4 class="card-title">All Devices Analyse <small>- Pie  Chart</small><img class="loading" id="loading-devices" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -2%"></h4>
 				</div>
-				<div class="card-body">
-					<canvas id="doughnut-chart-stat"></canvas>
+				<div class="card-body" id="allDevice_container">
+					<canvas id="devices_chart"></canvas>
 				</div>
 				<div class="card-footer">
-            <div class="form-group" style="width: 37%">
-              <select class="custom-select">
-                <option value="1" selected>open</option>
-                <option value="2">clic</option>
-              </select>
-							&nbsp;
-							<div class="form-group" style="width: 37%">
-                <select class="custom-select">
-                  <option value="1" selected>Normale</option>
-                  <option value="2">Predictive</option>
-                </select>
-              </div>
-            </div>
+						<div class="form-group" style="width: 37%">
+							<select id="type-devices" class="custom-select">
+								<option value="open" selected>open</option>
+								<option value="clic">clic</option>
+							</select>
+						</div>
 						&nbsp;
-            <button type="button" class="btn btn-rose">load</button>
-        </div>
+						<div class="form-group" style="width: 37%">
+							<select id="mode-devices" class="custom-select">
+								<option value="Normale" selected>Normale</option>
+								<option value="Predictive">Predictive</option>
+							</select>
+						</div>
+						&nbsp;
+						<button id="btn-devices" type="button" class="btn btn-rose btn-load">load</button>
+			</div>
 			</div>
 		</div>
 	</div>
@@ -366,129 +334,19 @@
 {% endblock %}
 {% block div %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-
+<script src="{% static 'assets/js/charts.js' %}" type="text/javascript"></script>
  <script>
+	 $(".loading").css("visibility", "hidden");
+	 mail_sending_id = " {{ mail_sending_id }} ";
+	 bdname = "{{ bdname }}";
    // chart pc
-     new Chart(document.getElementById("doughnut-chart"), {
-     type: 'doughnut',
-     data: {
-       labels: ["Desktop", "others"],
-       datasets: [
-         {
-           label: "Population (millions)",
-           backgroundColor: ["#0AB0BF", "#8e5ea2"],
-           data: [{{Analyse_obj.Desktop_open}}, {{Analyse_obj.SumAllDevices}}- {{Analyse_obj.Desktop_open}}]
-         }
-       ]
-     },
-     options: {
-       title: {
-         display: true,
-         text: 'Nombre Open with pc for all Contacts'
-       }
-     }
-   });
+	 loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.SumAllDevices}}- {{Analyse_obj.Desktop_open}}], ["#4CAF50", "#E74C3C"], ["True", "False"], "desktop_chart", "Desktop Clic Per Contact (Normale)");
      //chart Tablet
-     new Chart(document.getElementById("doughnut-chart-clic"), {
-     type: 'doughnut',
-     data: {
-       labels: ["tablet", "others"],
-       datasets: [
-         {
-           label: "Population (millions)",
-           backgroundColor: ["#148F77", "#8e5ea2"],
-           data: [{{Analyse_obj.tablet_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tablet_open}}]
-         }
-       ]
-     },
-     options: {
-       title: {
-         display: true,
-         text: 'Predicted world population (millions) in 2050'
-       }
-     }
-   });
+	 loadChart([{{Analyse_obj.tablet_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tablet_open}}], ["#1B4F72", "#E74C3C"], ["True", "False"], "tablet_chart", "Tablet Clic per contact (Normale)");
      //chart Telephone
-     new Chart(document.getElementById("doughnut-chart-open"), {
-     type: 'doughnut',
-     data: {
-       labels: ["phone", "others"],
-       datasets: [
-         {
-           label: "Population (millions)",
-           backgroundColor: ["#F4D03F", "#8e5ea2"],
-           data: [{{Analyse_obj.tel_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tel_open}}]
-         }
-       ]
-     },
-     options: {
-       title: {
-         display: true,
-         text: 'Predicted world population (millions) in 2050'
-       }
-
-     }
-   });
-   // chart final
-   new Chart(document.getElementById("line-chart"), {
- type: 'line',
- data: {
-   labels: [1500,1600,1700,1750,1800,1850,1900,1950,1999,2050],
-   datasets: [{
-       data: [282,350,411,502,635,1205,3201,4523,5482,6584],
-       label: "sent",
-       borderColor: "#3e95cd",
-       fill: false
-     }, {
-       data: [282,350,411,502,635,809,947,1402,3700,5267],
-       label: "open",
-       borderColor: "#8e5ea2",
-       fill: false
-     }, {
-       data: [168,170,178,190,203,276,408,547,675,734],
-       label: "clickers",
-       borderColor: "#3cba9f",
-       fill: false
-     }, {
-       data: [40,20,10,16,24,38,74,167,508,784],
-       label: "Bounces",
-       borderColor: "#e8c3b9",
-       fill: false
-     }, {
-       data: [6,3,2,2,7,26,82,172,312,433],
-       label: "unsubscribes",
-       borderColor: "#c45850",
-       fill: false
-     }
-   ]
- },
- options: {
-   title: {
-     display: true,
-     text: 'World population per region (in millions)'
-   }
- }
-});
+	 loadChart([{{Analyse_obj.tel_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tel_open}}], ["#76448A", "#E74C3C"], ["True", "False"], "mobile_chart", "Mobile Clic per contact (Normale)")
    // stat
-     new Chart(document.getElementById("doughnut-chart-stat"), {
-     type: 'doughnut',
-     data: {
-       labels: ["Desktop", "tablet", "phone"],
-       datasets: [
-         {
-           label: "Population (millions)",
-           backgroundColor: ["#0AB0BF", "#148F77", "#F4D03F"],
-           data: [{{Analyse_obj.Desktop_open}}, {{Analyse_obj.tablet_open}}, {{Analyse_obj.tel_open}}]
-         }
-       ]
-     },
-     options: {
-       title: {
-         display: true,
-         text: 'Predicted world population (millions) in 2050'
-       }
-     }
-   });
+	 loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.tablet_open}}, {{Analyse_obj.tel_open}}], ["#4CAF50", "#1B4F72", "#76448A"], ["Desktop", "tablet", "phone"],"devices_chart", "All Devices Clic per contact (Normale)")
  </script>
  <script>
    // navigation active

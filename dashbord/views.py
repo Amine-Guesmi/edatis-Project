@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib import messages
 import logging
 import subprocess
-from django.http import JsonResponse
+from django.http import HttpResponse, Http404
 #import models
 from .models import compte, compagne, Analyse
 #Spark
@@ -75,9 +75,9 @@ def activateWaiter(request, username):
 
 def AnalysePerCompagne(request, bdname, mail_sending_id):
 
-    Analyse_obj = Analyse()
+    Analyse_obj = Analyse(10,15,16, 41)
 
-    df_clic = spark.read.json("/dataLake/Tisseo/clic")
+    ''' df_clic = spark.read.json("/dataLake/Tisseo/clic")
     df_link = spark.read.json("/dataLake/Tisseo/link")
     #open partie
     df = spark.read.json("/dataLake/"+bdname+"/open").select("tablet", "desktop", "mobile","mail_sending_id")
@@ -86,17 +86,51 @@ def AnalysePerCompagne(request, bdname, mail_sending_id):
     Analyse_obj.tel_open    = df.where("mobile=1 AND mail_sending_id="+str(mail_sending_id)).count()
     Analyse_obj.SumAllDevices = Analyse_obj.tablet_open + Analyse_obj.tel_open  + Analyse_obj.Desktop_open
     SumAllDevicesClic = df_clic.alias('c').join(df_link.alias('l'),col('l.id') == col('c.link_id')).where("mail_sending_id="+str(mail_sending_id)).count()
+    '''
     context = {
         'Analyse_obj' : Analyse_obj,
-        'pageName' : bdname+'Analyses',
-        'SumAllDevicesClic' : SumAllDevicesClic,
-        'mail_sending_id' :  mail_sending_id
+        'pageName' : bdname+' Analyses',
+        'SumAllDevicesClic' : 15,
+        'mail_sending_id' :  mail_sending_id,
+        'bdname' : bdname
     }
     return render(request, 'Analyse.html', context)
 
-def updateGraph(request, mail_sending_id, type_device, mode_device):
-    data['form_is_valid'] = True
-    return JsonResponse(data)
+def updateGraph(request):
+    data = {}
+    if request.method == 'POST':
+        print(request.POST.get('chartType'))
+        if request.POST.get('chartType') == '1':
+            if request.POST.get('mode') == 'Normale':
+                if request.POST.get('type') == 'open':
+                    nb_open = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/open").where(request.POST.get('device')+"=1 AND mail_sending_id="+request.POST.get('mail_sending_id')).count()
+                    print(nb_open)
+                    #all_open = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/open").where("mail_sending_id="+request.POST.get('mail_sending_id')).count()
+                    data = {'nb' : nb_open}
+                elif request.POST.get('type') == 'clic':
+                    df_clic = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/clic")
+                    df_link = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/link")
+                    nb_clic=df_clic.alias('c').join(df_link.alias('l'),col('l.id') == col('c.link_id')).where(request.POST.get('device')+"=1 AND mail_sending_id="+request.POST.get('mail_sending_id')).count()
+                    data = {'nb' : nb_clic}
+            else:
+                #Predictive
+                pass
+        else:
+            if request.POST.get('mode') == 'Normale':
+                if request.POST.get('type') == 'open':
+                    df = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/open").where("mail_sending_id="+request.POST.get('mail_sending_id'))
+                    data = {'desktop' : df.where('desktop=1').count(), 'tablet' : df.where('tablet=1').count(), 'mobile' : df.where('mobile=1').count()}
+                elif request.POST.get('type') == 'clic':
+                    df_clic = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/clic")
+                    df_link = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/link")
+                    df=df_clic.alias('c').join(df_link.alias('l'),col('l.id') == col('c.link_id')).where("mail_sending_id="+request.POST.get('mail_sending_id'))
+                    data = {'desktop' : df.where('desktop=1').count(), 'tablet' : df.where('tablet=1').count(), 'mobile' : df.where('mobile=1').count()}
+            else:
+                #Predictive
+                pass
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    else:
+        return Http404
 
 def test(request):
     return render(request, 'error.html')

@@ -11,5 +11,5 @@ urlpatterns = [
     path('users', views.allUsers, name='allUsers'),
     path('test', views.test, name='test'),
     #ajax function
-    path('analyse/<int:mail_sending_id>/<str:type_device>/<str:mode_device>', views.updateGraph, name='updateGraph'),
+    path('analyse/test', views.updateGraph, name='updateGraph'),
 ]
