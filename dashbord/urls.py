@@ -7,9 +7,11 @@ app_name = 'dashbord'
 urlpatterns = [
     path('', views.dashbord, name='dashbord'),
     path('<str:bdname>/', views.allCompagne, name='allCompagne'),
-    path('<str:bdname>/<int:mail_sending_id>', views.AnalysePerCompagne, name='AnalysePerCompagne'),
+    path('<str:bdname>/<int:mail_sending_id>/contact', views.AnalysePerContact, name='AnalysePerContact'),
+    path('<str:bdname>/<int:mail_sending_id>/compagne', views.AnalysePerCompagne, name='AnalysePerCompagne'),
     path('users', views.allUsers, name='allUsers'),
     path('test', views.test, name='test'),
     #ajax function
-    path('analyse/test', views.updateGraph, name='updateGraph'),
+    path('analyse/contact', views.updateGraphContact, name='updateGraphContact'),
+    path('analyse/compagne', views.updateGraphCompagne, name='updateGraphCompagne'),
 ]

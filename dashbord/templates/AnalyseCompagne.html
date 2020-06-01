@@ -1,0 +1,222 @@
+{% extends 'dashbord_elements/base.html' %}
+{% load static %}
+{% block body %}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header card-header-info card-header-text">
+        <div class="card-icon">
+          <i class="material-icons">library_books</i>
+        </div>
+        <h4 class="card-title">First Date</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <input class="form-control" disabled id="firstDate" type="date">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header card-header-info card-header-text">
+        <div class="card-icon">
+          <i class="material-icons">library_books</i>
+        </div>
+        <h4 class="card-title">Seconde Date</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <input class="form-control datepicker" disabled id="secondDate" type="date">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-success card-header-text">
+        <div class="card-text">
+          <h4 class="card-title">Mail sending id : <span class="mail_sending_id">{{ mail_sending_id }}</span></h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form class="form-inline">
+          <div class="form-group mx-sm-3 mb-2">
+            <input id="mail_sending_id" class="form-control" placeholder="Mail Sending Id" type="Number" width="30%">
+          </div>
+          <div class="togglebutton">
+            <label><input id="dateOption" type="checkbox"> <span class="toggle"></span> <span><strong>with date(<span class="dataOptiontext" style="color : red">OFF</span>)</strong></span></label>
+          </div>&nbsp;&nbsp;&nbsp; <button id="btn-charge" class="btn btn-success mb-1" type="button"><strong>Confirm</strong></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons">pie_chart</i>
+        </div>
+        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-mobile" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+      </div>
+      <div class="card-body" id="mobile_container">
+        <canvas height="450" id="sending_abotie" width="800"></canvas>
+      </div>
+      <div class="card-footer">
+        <div class="form-group" style="width: 74%">
+          <select class="custom-select" id="mode-sending-recienved">
+            <option selected value="Normale">
+              Normale
+            </option>
+            <option value="Predictive">
+              Predictive
+            </option>
+          </select>
+        </div>&nbsp; <button class="btn btn-rose btn-load" id="btn-sending-recieved" type="button">load</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons">pie_chart</i>
+        </div>
+        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-mobile" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+      </div>
+      <div class="card-body" id="mobile_container">
+        <canvas height="450" id="open_clic" width="800"></canvas>
+      </div>
+      <div class="card-footer">
+        <div class="form-group" style="width: 74%">
+          <select class="custom-select" id="mode-open-clic">
+            <option selected value="Normale">
+              Normale
+            </option>
+            <option value="Predictive">
+              Predictive
+            </option>
+          </select>
+        </div>&nbsp; <button id="btn-open-clic" class="btn btn-rose btn-load"  type="button">load</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header card-header-icon card-header-rose">
+        <div class="card-icon">
+          <i class="material-icons">pie_chart</i>
+        </div>
+        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-devices-open-clic" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+      </div>
+      <div class="card-body" id="mobile_container">
+        <canvas height="450" id="open_clic_devices" width="800"></canvas>
+      </div>
+      <div class="card-footer">
+        <div class="form-group" style="width: 37%">
+          <select class="custom-select" id="type-open-clic-devices">
+            <option selected value="open">
+              open
+            </option>
+            <option value="clic">
+              clic
+            </option>
+          </select>
+        </div>&nbsp;
+        <div class="form-group" style="width: 37%">
+          <select class="custom-select" id="mode-open-clic-devices">
+            <option selected value="Normale">
+              Normale
+            </option>
+            <option value="Predictive">
+              Predictive
+            </option>
+          </select>
+        </div>&nbsp; <button id="btn-open-clic-devices" class="btn btn-rose btn-load" type="button">load</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header card-header-primary card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">assignment</i>
+        </div>
+        <h4 class="card-title">Messages from 01-27-2016 to 02-25-2016</h4>
+      </div>
+      <div class="card-body">
+        <div class="toolbar">
+          <!--        Here you can write extra buttons/actions for the toolbar              -->
+        </div>
+        <div class="material-datatables">
+          <table cellspacing="0" class="table table-striped table-no-bordered table-hover" id="datatables" style="width:100%" width="100%">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Subjest</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Tags</th>
+                <th class="disabled-sorting text-right">Actions</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Subjest</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Tags</th>
+                <th class="disabled-sorting text-right">Actions</th>
+              </tr>
+            </tfoot>
+            <tbody>
+              <tr>
+                <td><button class="btn btn-info" type="button">Opened</button></td>
+                <td>02-25-2016 06:26:16 pm</td>
+                <td>Confirm Your Upcomi...</td>
+                <td>test@test.com</td>
+                <td>test2@test.com</td>
+                <td>Confirmation SMTP</td>
+                <td class="text-right"><button class="btn btn-warning" type="button">detail</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- end content-->
+    </div><!--  end card  -->
+  </div>
+</div>
+{% endblock %}
+{% block div %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="{% static 'assets/js/charts.js' %}" type="text/javascript"></script>
+  <script type="text/javascript">
+      $('#dateOption').click(function () {
+        if ($('#dateOption').prop("checked")){
+          $('.dataOptiontext').html("ON");
+          $('.dataOptiontext').css('color' , 'green');
+          $('#firstDate').attr('disabled', false);
+          $('#secondDate').attr('disabled', false);
+        }else{
+          $('.dataOptiontext').html('OFF');
+          $('.dataOptiontext').css('color' , 'red');
+          $('#firstDate').attr('disabled', true);
+          $('#secondDate').attr('disabled', true);
+        }
+      });
+      $(".loading").css("visibility", "hidden");
+      mail_sending_id = " {{ mail_sending_id }} ";
+   	  bdname = "{{ bdname }}";
+      chart_send_Recieved = loadChart( {{ chart_sending_abotie }}, ["#4CAF50", "#E74C3C"], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'pie');
+      chart_open_clic = loadChart( {{ chart_open_clic }}, ["#4CAF50", "#E74C3C"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'pie');
+      chart_open_clic_devices = loadChart( {{ chart_devices_clic }}, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+
+  </script>
+{% endblock %}

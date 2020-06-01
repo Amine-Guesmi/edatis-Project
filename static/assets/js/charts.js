@@ -1,6 +1,6 @@
-function loadChart(data, color, labels, id_chart, description){
-  var chart = new Chart(document.getElementById(id_chart), {
-  type: 'doughnut',
+function loadChart(data, color, labels, id_chart, description, chart_type){
+  return new Chart(document.getElementById(id_chart), {
+  type: chart_type,
   data: {
     labels: labels,
     datasets: [

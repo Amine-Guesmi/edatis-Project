@@ -340,13 +340,13 @@
 	 mail_sending_id = " {{ mail_sending_id }} ";
 	 bdname = "{{ bdname }}";
    // chart pc
-	 loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.SumAllDevices}}- {{Analyse_obj.Desktop_open}}], ["#4CAF50", "#E74C3C"], ["True", "False"], "desktop_chart", "Desktop Clic Per Contact (Normale)");
+	 chart1 = loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.SumAllDevices}}- {{Analyse_obj.Desktop_open}}], ["#4CAF50", "#E74C3C"], ["True", "False"], "desktop_chart", "Desktop Clic Per Contact (Normale)", 'doughnut');
      //chart Tablet
-	 loadChart([{{Analyse_obj.tablet_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tablet_open}}], ["#1B4F72", "#E74C3C"], ["True", "False"], "tablet_chart", "Tablet Clic per contact (Normale)");
+	 chart2 = loadChart([{{Analyse_obj.tablet_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tablet_open}}], ["#1B4F72", "#E74C3C"], ["True", "False"], "tablet_chart", "Tablet Clic per contact (Normale)", 'doughnut');
      //chart Telephone
-	 loadChart([{{Analyse_obj.tel_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tel_open}}], ["#76448A", "#E74C3C"], ["True", "False"], "mobile_chart", "Mobile Clic per contact (Normale)")
+	 chart3 = loadChart([{{Analyse_obj.tel_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tel_open}}], ["#76448A", "#E74C3C"], ["True", "False"], "mobile_chart", "Mobile Clic per contact (Normale)", 'doughnut')
    // stat
-	 loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.tablet_open}}, {{Analyse_obj.tel_open}}], ["#4CAF50", "#1B4F72", "#76448A"], ["Desktop", "tablet", "phone"],"devices_chart", "All Devices Clic per contact (Normale)")
+	 chart4 = loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.tablet_open}}, {{Analyse_obj.tel_open}}], ["#4CAF50", "#1B4F72", "#76448A"], ["Desktop", "tablet", "phone"],"devices_chart", "All Devices Clic per contact (Normale)", 'doughnut')
  </script>
  <script>
    // navigation active

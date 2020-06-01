@@ -47,7 +47,7 @@ $(document).ready(function(){
       return false;
   };
 
-  var chargeChart = function(){
+  var chargeChartContact = function(){
     btn = $(this).attr('id');
     $('.btn-load').attr('disabled', true);
     if (btn == 'btn-Desktop'){
@@ -69,7 +69,7 @@ $(document).ready(function(){
     $('#loading-'+obj.device).css("visibility", "visible");
     $.ajax({
       type: 'POST',
-      url:"/dashbord/analyse/test",
+      url:"/dashbord/analyse/contact",
       dataType : 'json',
       data : obj,
       success: function (data) {
@@ -80,11 +80,12 @@ $(document).ready(function(){
             dataSet = [data.nb, parseInt($('#allOpen').text())]
           else if (obj.type == "clic")
             dataSet = [data.nb, parseInt($('#allClic').text())]
-          alert(obj.chartType);
         }else{
             dataSet = [data.desktop, data.tablet, data.mobile];
         }
-        loadChart(dataSet, Attributes.color, Attributes.label, obj.device+"_chart", obj.device+" "+obj.type+" Per Contact ("+obj.mode+")");
+        charts = {"desktop_chart" : chart1, "tablet_chart" : chart2, "mobile_chart" : chart3, "devices_chart" : chart4};
+        charts[obj.device+"_chart"].destroy();
+        charts[obj.device+"_chart"] = loadChart(dataSet, Attributes.color, Attributes.label, obj.device+"_chart", obj.device+" "+obj.type+" Per Contact ("+obj.mode+")", 'doughnut');
         $.notify({
           icon: 'add_alert',
           title: '<strong>Succesfuly</strong>',
@@ -97,20 +98,130 @@ $(document).ready(function(){
     });
   }
 
-  $("#btn-Desktop").click(chargeChart);
-  $("#btn-tablet").click(chargeChart);
-  $("#btn-mobile").click(chargeChart);
-  $("#btn-devices").click(chargeChart);
-  // Create
+  var chargeChartCompagne = function(){
+    $('.btn-load').attr('disabled', true);
+    btn = $(this).attr('id');
+    now = new Date()
+    obj = {}
+    var month = ((now.getMonth().length+1) === 1)? (now.getMonth()+1) : '0' + (now.getMonth()+1);
+    var day = ((now.getDate().length+1) === 1)? (now.getDate()) : '0' + (now.getDate());
+    firstDate = '2015-05-05';
+    secondDate = now.getFullYear()+'-'+month+'-'+day;
+    if ($('#dateOption').prop("checked")){
+        firstDate = $('#firstDate').val();
+        secondDate = $('#secondDate').val();
+    if (btn == 'btn-charge'){
+      $(".loading").css("visibility", "visible");
+      obj = {'mail_sending_id' : mail_sending_id ,'action' : 'charge-all-charts', 'bdname' : bdname, 'type_devices' : $('#type-open-clic-devices').val(), 'mode_sending_recieved' : $('#mode-sending-recienved').val(), 'mode_open_clic' : $('#mode-open-clic').val(), 'mode_open_clic_devices' : $('#mode-open-clic-devices').val(), 'firstDate' : firstDate , 'secondDate' : secondDate }
+      if($('#mail_sending_id').val() != '')
+        obj['mail_sending_id'] = $('#mail_sending_id').val();
+      }
+    }else if (btn == 'btn-sending-recieved'){
+
+
+    }else if (btn == 'btn-open-clic'){
+      alert('hello3');
+    }else if (btn == 'btn-open-clic-devices'){
+      $('#loading-devices-open-clic').css("visibility", "visible");
+      obj = {'mail_sending_id' : mail_sending_id ,'action' : 'charge-open-clic-devices-chart', 'bdname' : bdname, 'type': $('#type-open-clic-devices').val() , 'mode' : $('#mode-open-clic-devices').val(), 'firstDate' : firstDate , 'secondDate' : secondDate }
+    }
+
+    $.ajax({
+      url : '/dashbord/analyse/compagne',
+      type : 'post',
+      dataType : 'json',
+      data : obj,
+      success: function(data){
+        $(".loading").css("visibility", "hidden");
+        $('.btn-load').attr('disabled', false);
+        if (data.error == '0'){
+          $.notify({
+            icon: 'add_alert',
+            title: '<strong>Warning</strong>',
+            message: 'first date or second date is Empty'
+            },
+          {
+            type: 'danger'
+          })
+        }
+        else if (data.error == '1'){
+          $.notify({
+            icon: 'add_alert',
+            title: '<strong>Warning</strong>',
+            message: 'first date larger than second date'
+            },
+          {
+            type: 'danger'
+          })
+        }
+        else if (data.error == '2') {
+          $.notify({
+            icon: 'add_alert',
+            title: '<strong>Warning</strong>',
+            message: 'this mail sending id doest not exist '
+            },
+          {
+            type: 'danger'
+          });
+        }
+        else if (data.error == '-1' && data.action == '0' ){
+            chart_send_Recieved.destroy();
+            chart_open_clic.destroy();
+            chart_open_clic_devices.destroy();
+            chart_send_Recieved = loadChart( data.data_sending_recieved, ["#4CAF50", "#E74C3C"], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'pie');
+            chart_open_clic = loadChart( data.data_open_clic, ["#4CAF50", "#E74C3C"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'pie');
+            chart_open_clic_devices = loadChart( data.data_devices_open_clic, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+            $('.mail_sending_id').html(obj.mail_sending_id);
+            $('#mail_sending_id').val('');
+            mail_sending_id = obj.mail_sending_id;
+            $.notify({
+              icon: 'add_alert',
+              title: '<strong>Succefully</strong>',
+              message: 'all graph is Updated Succesfuly '
+              },
+            {
+              type: 'success'
+            });
+        }else if (data.error == '-1' && data.action == '1' ){
+            chart_open_clic_devices.destroy();
+            if (data.open){
+              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+            }else{
+              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+            }
+            $.notify({
+              icon: 'add_alert',
+              title: '<strong>Succefully</strong>',
+              message: 'graph is Updated Succesfuly '
+              },
+            {
+              type: 'success'
+            });
+        }
+      }
+    });
+  }
+
+  //Analyse per compagne
+  $("#btn-charge").click(chargeChartCompagne);
+  $("#btn-sending-recieved").click(chargeChartCompagne);
+  $("#btn-open-clic").click(chargeChartCompagne);
+  $("#btn-open-clic-devices").click(chargeChartCompagne);
+  //Analyse per contact
+  $("#btn-Desktop").click(chargeChartContact);
+  $("#btn-tablet").click(chargeChartContact);
+  $("#btn-mobile").click(chargeChartContact);
+  $("#btn-devices").click(chargeChartContact);
+  // Create User
   $(".show-form").click(ShowForm);
   $("#modal-user").on("submit", ".create-form", SaveForm);
-  // Update
+  // Update User
   $("#users-table").on("click", ".show-form-update", ShowForm);
   $("#modal-user").on("submit", ".update-form", SaveForm);
-  // delete
+  // delete User
   $("#users-table").on("click", ".show-form-delete", ShowForm);
   $("#modal-user").on("submit", ".delete-form", SaveForm);
-  //activate
+  //activate user
   $("#users-table").on("click", ".show-form-activate", ShowForm);
   $("#modal-user").on("submit", ".activate-form", SaveForm);
 
