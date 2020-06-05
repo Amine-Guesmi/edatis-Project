@@ -146,7 +146,7 @@
             </tfoot>
             <tbody>
               {% for compte in comptes %}
-                  <tr> 
+                  <tr>
                     <td>
                       {% if compte.active %}
                         <span class="badge badge-success">Active</span>
@@ -158,11 +158,14 @@
                     <td>{{compte.name}}</td>
                     <td>{{compte.bddname}}</td>
                     <td>{{compte.inscriptiondate}}</td>
-                      <td class="text-right">
-                        <a href="{% url 'edatis_dashbord:allCompagne' compte.bddname %}" type="button" rel="tooltip" class="btn btn-info btn-round" style="color : white">
-                          <i  class="material-icons">assessment</i> <strong> Compagnes</strong>
-                        </a>
-                      </td>
+                    <td class="text-right">
+                      <a href="{% url 'edatis_dashbord:globalStat' compte.bddname %}" type="button"class="btn btn-info btn-round" style="color : white; background : #154360">
+                        <i  class="material-icons">assessment</i> <strong> Global Stat</strong>
+                      </a>
+                      <a href="{% url 'edatis_dashbord:allCompagne' compte.bddname %}" type="button" class="btn btn-info btn-round" style="color : white">
+                        <i  class="material-icons">assessment</i> <strong> Analyse</strong>
+                      </a>
+                    </td>
                   </tr>
               {% endfor %}
             </tbody>

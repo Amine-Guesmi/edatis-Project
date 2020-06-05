@@ -8,6 +8,8 @@ import logging
 import datetime
 import subprocess
 from django.http import HttpResponse, Http404
+import time
+import calendar
 #machine leaning module
 import pickle
 #open Predict
@@ -58,7 +60,7 @@ def allCompagne(request, bdname):
     df = spark.read.json("/dataLake/"+bdname+"/mail_sending").select("id", "name", "finish").distinct()
     l= [list(row) for row in df.collect()]
     context = {
-        'compagnes' :[compagne(s[0], s[1], s[2]) for s in l] ,
+        'compagnes' :[compagne(s[0], s[1], s[2], 1) for s in l] ,
         'bdname' : bdname,
         'pageName' : 'Compagnes Of '+bdname
     }
@@ -84,22 +86,28 @@ def activateWaiter(request, username):
     return redirect('edatis_dashbord:allUsers')
 
 def AnalysePerContact(request, bdname, mail_sending_id):
-    Analyse_obj = Analyse(10,15,16, 41)
-
-    ''' df_clic = spark.read.json("/dataLake/Tisseo/clic")
-    df_link = spark.read.json("/dataLake/Tisseo/link")
-    #open partie
-    df = spark.read.json("/dataLake/"+bdname+"/open").select("tablet", "desktop", "mobile","mail_sending_id")
-    Analyse_obj.tablet_open = df.where("tablet=1 AND mail_sending_id="+str(mail_sending_id)).count()
-    Analyse_obj.Desktop_open= df.where("desktop=1 AND mail_sending_id="+str(mail_sending_id)).count()
-    Analyse_obj.tel_open    = df.where("mobile=1 AND mail_sending_id="+str(mail_sending_id)).count()
-    Analyse_obj.SumAllDevices = Analyse_obj.tablet_open + Analyse_obj.tel_open  + Analyse_obj.Desktop_open
-    SumAllDevicesClic = df_clic.alias('c').join(df_link.alias('l'),col('l.id') == col('c.link_id')).where("mail_sending_id="+str(mail_sending_id)).count()
+    Analyse_obj = Analyse(0 ,0 ,0 ,0 ,0 , 0)
     '''
+    for content in  spark.read.json("/dataLake/"+bdname+"/stat_hour").select("nbmailsend", "mail_sending_id","clicsdesktop", "clicstablet", "clicsmobile", "opensdesktop", "opensmobile", "openstablet").where("mail_sending_id = "+str(mail_sending_id)).collect():
+        Analyse_obj.nbMailSending += content['nbmailsend']
+        Analyse_obj.tablet_open += content['openstablet']
+        Analyse_obj.tel_open += content['opensmobile']
+        Analyse_obj.Desktop_open += content['opensdesktop']
+        Analyse_obj.SumAllDevicesClic += (content['clicsdesktop']+content['clicstablet']+content['clicsmobile'])
+    '''
+    for content in  spark.read.json("/dataLake/"+bdname+"/open").select('mail_sending_id', "desktop", "tablet", "mobile").where("mail_sending_id = "+str(mail_sending_id)).collect():
+        if content["desktop"] :
+            Analyse_obj.Desktop_open += 1
+        elif content["tablet"]:
+            Analyse_obj.tablet_open += 1
+        else:
+            Analyse_obj.tel_open += 1
+    Analyse_obj.SumAllDevicesOpen = (Analyse_obj.tablet_open + Analyse_obj.tel_open + Analyse_obj.Desktop_open )
+    Analyse_obj.SumAllDevicesClic += 300
+
     context = {
         'Analyse_obj' : Analyse_obj,
         'pageName' : bdname+' Analyses',
-        'SumAllDevicesClic' : 15,
         'mail_sending_id' :  mail_sending_id,
         'bdname' : bdname
     }
@@ -244,7 +252,82 @@ def updateGraphCompagne(request):
                 pass
             else:
                 pass
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+def globalStat(request, bdname):
+    nbComp = 0
+    compagnes = []
+    for content in spark.read.json("/dataLake/"+bdname+"/mail_sending").select('id', 'name', 'datecreation', "finish").distinct().collect():
+        compagnes.append(compagne(content["id"], content["name"], content["datecreation"], content["finish"]))
+        nbComp += 1
+
+
+    nbMailRecieved, nbMailSend , nbMailClic, nbMailOpen, nbMailClic = 0, 0 ,0 ,0, 0
+    deb = calendar.timegm(time.gmtime())
+    dictOpen = {}
+    dictClic = {}
+    dictRecieved = {}
+    dictSend = {}
+    for content in  spark.read.json("/dataLake/"+bdname+"/mail_sending_global_stats").select("uniquclic", "uniqopen", "volumesend", "volumerecieved", "mail_sending_id").collect():
+            if content['volumerecieved'] is not None and content['volumesend'] is not None:
+                nbMailRecieved += content['volumerecieved']
+                #dict Of Recieved
+                dictRecieved[content["mail_sending_id"]] = content['volumerecieved']
+            if content['volumesend'] is not None:
+                nbMailSend += content['volumesend']
+                #dict Of Send
+                dictSend[content["mail_sending_id"]] = content['volumesend']
+            if content['uniqopen'] is not None and  content['volumerecieved'] is not None and content['volumesend'] is not None :
+                nbMailOpen += content['uniqopen']
+                #dict Of Open
+                dictOpen[content["mail_sending_id"]] = content['uniqopen']
+            if content['uniquclic'] is not None and content['volumerecieved'] is not None and content['volumesend'] is not None:
+                nbMailClic += content['uniquclic']
+                #dict Of Clic
+                dictClic[content["mail_sending_id"]] = content['uniquclic']
+
+    print(len(dictClic))
+    fin = calendar.timegm(time.gmtime())
+    print(fin - deb)
+
+    allClientActive= [list(row) for row in  spark.read.json("/dataLake/hub/compte").select("bddname", "active").where("active = true").collect()]
+    context = {
+        'bdname' : bdname,
+        'allClientActive' : allClientActive,
+        'nbComp' : nbComp,
+        'compagnes' : compagnes,
+        'nbMailRecieved' : nbMailRecieved,
+        'nbMailSend' : nbMailSend,
+        'nbMailOpen' : nbMailOpen,
+        'nbMailClic' : nbMailClic,
+        'nbMailNotSending' : nbMailSend - nbMailRecieved,
+        'dictRecieved' : dictRecieved,
+        'dictOpen' : dictOpen,
+        'dictClic': dictClic,
+        'dictSend' : dictSend,
+    }
+    return render(request, 'globalStat.html', context)
+
+def updateGlobalStat(request):
+    data = {"recieved" : 0, "send" : 0, "open" : 0, "clic" : 0, "error" : "0" }
+    if request.POST.get("target") == "stat_hour":
+        for content in  spark.read.json("/dataLake/"+request.POST.get("bdname")+"/stat_hour").select("clics", "opens", "nbmailsend", "recieved", "mail_sending_id", "date").where("date >= '"+request.POST.get('firstDate')+"' AND date <= '"+request.POST.get('secondDate')+"'").collect():
+            data["recieved"] += content['recieved']
+            data["send"] += content['nbmailsend']
+            data["open"] += content['opens']
+            data["clic"] += content['clics']
+    else:
+        for content in  spark.read.json("/dataLake/"+request.POST.get("bdname")+"/mail_sending_global_stats").select("uniquclic", "uniqopen", "volumesend", "volumerecieved", "mail_sending_id").collect():
+                if content['volumerecieved'] is not None :
+                    data["recieved"] += content['volumerecieved']
+                if content['volumesend'] is not None:
+                    data["send"] += content['volumesend']
+                if content['uniqopen'] is not None :
+                    data["open"] += content['uniqopen']
+                if content['uniquclic'] is not None :
+                    data["clic"] += content['uniquclic']
 
     return HttpResponse(json.dumps(data), content_type="application/json")
+
 def test(request):
     return render(request, 'error.html')

@@ -11,6 +11,7 @@ function loadChart(data, color, labels, id_chart, description, chart_type){
     ]
   },
   options: {
+    legend: { display: false },
     title: {
       display: true,
       text: description

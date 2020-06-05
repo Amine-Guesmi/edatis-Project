@@ -70,6 +70,20 @@
 	<div class="row">
 		<div class="col-lg-2 col-md-6 col-sm-6">
 			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+				<div class="card-header bg-success">
+					<center>
+						<h4><strong>Mail Sending</strong></h4>
+					</center>
+				</div>
+				<div class="card-body">
+					<center>
+						<h3 class="card-title text-success">{{ Analyse_obj.nbMailSending }}</h3>
+					</center>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-2 col-md-6 col-sm-6">
+			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
 				<div class="card-header bg-dark">
 					<center>
 						<h4><strong>Number Of Open</strong></h4>
@@ -77,7 +91,7 @@
 				</div>
 				<div class="card-body" >
 					<center>
-						<h3  class="card-title text-dark" id="allOpen">{{Analyse_obj.SumAllDevices}}</h3>
+						<h3  class="card-title text-dark" id="allOpen">{{Analyse_obj.SumAllDevicesOpen}}</h3>
 					</center>
 				</div>
 			</div>
@@ -91,7 +105,7 @@
 				</div>
 				<div class="card-body">
 					<center>
-						<h3 class="card-title text-info" id="allClic">{{SumAllDevicesClic}}</h3>
+						<h3 class="card-title text-info" id="allClic">{{Analyse_obj.SumAllDevicesClic}}</h3>
 					</center>
 				</div>
 			</div>
@@ -106,20 +120,6 @@
 				<div class="card-body">
 					<center>
 						<h3 class="card-title text-secondary">6,330</h3>
-					</center>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-2 col-md-6 col-sm-6">
-			<div class="card text-white bg-white mb-3" style="max-width: 18rem;">
-				<div class="card-header bg-success">
-					<center>
-						<h4><strong>Clicks rate</strong></h4>
-					</center>
-				</div>
-				<div class="card-body">
-					<center>
-						<h3 class="card-title text-success">6,330</h3>
 					</center>
 				</div>
 			</div>
@@ -340,11 +340,11 @@
 	 mail_sending_id = " {{ mail_sending_id }} ";
 	 bdname = "{{ bdname }}";
    // chart pc
-	 chart1 = loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.SumAllDevices}}- {{Analyse_obj.Desktop_open}}], ["#4CAF50", "#E74C3C"], ["True", "False"], "desktop_chart", "Desktop Clic Per Contact (Normale)", 'doughnut');
+	 chart1 = loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.SumAllDevicesOpen}}- {{Analyse_obj.Desktop_open}}], ["#4CAF50", "#E74C3C"], ["True", "False"], "desktop_chart", "Desktop Clic Per Contact (Normale)", 'doughnut');
      //chart Tablet
-	 chart2 = loadChart([{{Analyse_obj.tablet_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tablet_open}}], ["#1B4F72", "#E74C3C"], ["True", "False"], "tablet_chart", "Tablet Clic per contact (Normale)", 'doughnut');
+	 chart2 = loadChart([{{Analyse_obj.tablet_open}}, {{Analyse_obj.SumAllDevicesOpen}} - {{Analyse_obj.tablet_open}}], ["#1B4F72", "#E74C3C"], ["True", "False"], "tablet_chart", "Tablet Clic per contact (Normale)", 'doughnut');
      //chart Telephone
-	 chart3 = loadChart([{{Analyse_obj.tel_open}}, {{Analyse_obj.SumAllDevices}} - {{Analyse_obj.tel_open}}], ["#76448A", "#E74C3C"], ["True", "False"], "mobile_chart", "Mobile Clic per contact (Normale)", 'doughnut')
+	 chart3 = loadChart([{{Analyse_obj.tel_open}}, {{Analyse_obj.SumAllDevicesOpen}} - {{Analyse_obj.tel_open}}], ["#76448A", "#E74C3C"], ["True", "False"], "mobile_chart", "Mobile Clic per contact (Normale)", 'doughnut')
    // stat
 	 chart4 = loadChart([{{Analyse_obj.Desktop_open}}, {{Analyse_obj.tablet_open}}, {{Analyse_obj.tel_open}}], ["#4CAF50", "#1B4F72", "#76448A"], ["Desktop", "tablet", "phone"],"devices_chart", "All Devices Clic per contact (Normale)", 'doughnut')
  </script>

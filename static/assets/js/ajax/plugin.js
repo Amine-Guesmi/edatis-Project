@@ -101,8 +101,8 @@ $(document).ready(function(){
   var chargeChartCompagne = function(){
     $('.btn-load').attr('disabled', true);
     btn = $(this).attr('id');
-    now = new Date()
-    obj = {}
+    now = new Date();
+    obj = {};
     var month = ((now.getMonth().length+1) === 1)? (now.getMonth()+1) : '0' + (now.getMonth()+1);
     var day = ((now.getDate().length+1) === 1)? (now.getDate()) : '0' + (now.getDate());
     firstDate = '2015-05-05';
@@ -110,12 +110,12 @@ $(document).ready(function(){
     if ($('#dateOption').prop("checked")){
         firstDate = $('#firstDate').val();
         secondDate = $('#secondDate').val();
+      }
     if (btn == 'btn-charge'){
       $(".loading").css("visibility", "visible");
       obj = {'mail_sending_id' : mail_sending_id ,'action' : 'charge-all-charts', 'bdname' : bdname, 'type_devices' : $('#type-open-clic-devices').val(), 'mode_sending_recieved' : $('#mode-sending-recienved').val(), 'mode_open_clic' : $('#mode-open-clic').val(), 'mode_open_clic_devices' : $('#mode-open-clic-devices').val(), 'firstDate' : firstDate , 'secondDate' : secondDate }
       if($('#mail_sending_id').val() != '')
         obj['mail_sending_id'] = $('#mail_sending_id').val();
-      }
     }else if (btn == 'btn-sending-recieved'){
 
 
@@ -168,9 +168,9 @@ $(document).ready(function(){
             chart_send_Recieved.destroy();
             chart_open_clic.destroy();
             chart_open_clic_devices.destroy();
-            chart_send_Recieved = loadChart( data.data_sending_recieved, ["#4CAF50", "#E74C3C"], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'pie');
-            chart_open_clic = loadChart( data.data_open_clic, ["#4CAF50", "#E74C3C"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'pie');
-            chart_open_clic_devices = loadChart( data.data_devices_open_clic, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+            chart_send_Recieved = loadChart( data.data_sending_recieved, ["#884EA0", "#17A589 "], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'doughnut');
+            chart_open_clic = loadChart( data.data_open_clic, ["#154360", "#CD5C5C"], ["Open ", "Clic"], "open_clic", obj.type_devices+" Per compagne", 'doughnut');
+            chart_open_clic_devices = loadChart( data.data_devices_open_clic, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'doughnut');
             $('.mail_sending_id').html(obj.mail_sending_id);
             $('#mail_sending_id').val('');
             mail_sending_id = obj.mail_sending_id;
@@ -185,9 +185,9 @@ $(document).ready(function(){
         }else if (data.error == '-1' && data.action == '1' ){
             chart_open_clic_devices.destroy();
             if (data.open){
-              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open  for Each Devices Per compagne", 'doughnut');
             }else{
-              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", " Clic for Each Devices Per compagne", 'doughnut');
             }
             $.notify({
               icon: 'add_alert',
@@ -202,6 +202,72 @@ $(document).ready(function(){
     });
   }
 
+
+    var updateGlobalStat = function(){
+      obj = {};
+      btn = $(this).attr('id');
+      $("#loading-card").css("visibility", "visible");
+      $('#btn-charge-globalStat').attr('disabled', true);
+      $('#btn-charge-allglobalStat').attr('disabled', true);
+      if ( btn =="btn-charge-globalStat"){
+        obj["target"] = "stat_hour";
+        if ($('#dateOption').prop("checked")){
+            obj["firstDate"] = $('#firstDate').val();
+            obj["secondDate"] = $('#secondDate').val();
+          }else{
+            now = new Date()
+            var month = ((now.getMonth().length+1) === 1)? (now.getMonth()+1) : '0' + (now.getMonth()+1);
+            var day = ((now.getDate().length+1) === 1)? (now.getDate()) : '0' + (now.getDate());
+            obj["firstDate"] = '2015-01-01';
+            obj["secondDate"] = now.getFullYear()+'-'+month+'-'+day;
+          }
+      }else{
+        obj["target"] = "global_stat";
+      }
+
+      obj["bdname"] = bd;
+      $.ajax({
+      url : "/dashbord/analyse/globalStat",
+      type : 'post',
+      data : obj,
+      dataType : 'json',
+      success: function(data){
+        $('#'+btn).attr('disabled', false);
+        $("#loading-card").css("visibility", "hidden");
+        if (data["error"] == "-1"){
+          $("#allbdNames").val(bd);
+          $.notify({
+            icon: 'add_alert',
+            title: '<strong>warning</strong>',
+            message: 'This Client is Not Exist in DataLake '
+            },
+          {
+            type: 'danger'
+          });
+        }else{
+          recieved = data["recieved"] ;
+          open =  data["open"] ;
+          clic =  data["clic"] ;
+          send =  data["send"] ;
+          inqueue = send - recieved;
+          $('#nbMailSend').text(send);
+          changeStatsGlobale (open, recieved, clic, send);
+          $.notify({
+            icon: 'add_alert',
+            title: '<strong>Succefully</strong>',
+            message: 'graph is Updated Succesfuly '
+            },
+          {
+            type: 'success'
+          });
+        }
+      }
+    });
+  };
+
+  //Analyse globalStat
+  $("#btn-charge-globalStat").click(updateGlobalStat);
+  $("#btn-charge-allglobalStat").click(updateGlobalStat);
   //Analyse per compagne
   $("#btn-charge").click(chargeChartCompagne);
   $("#btn-sending-recieved").click(chargeChartCompagne);

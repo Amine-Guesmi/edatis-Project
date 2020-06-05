@@ -1,0 +1,545 @@
+{% extends 'dashbord_elements/base.html' %}
+{% load static %}
+{% block body %}
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header card-header-info card-header-text">
+        <div class="card-icon">
+          <i class="material-icons">library_books</i>
+        </div>
+        <h4 class="card-title">First Date</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <input class="form-control" disabled id="firstDate" type="date">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-header card-header-info card-header-text">
+        <div class="card-icon">
+          <i class="material-icons">library_books</i>
+        </div>
+        <h4 class="card-title">Seconde Date</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <input class="form-control datepicker" disabled id="secondDate" type="date">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header card-header-success card-header-text">
+        <div class="card-text">
+          <h4 class="card-title">client Name : <span class="baseName">{{ bdname }}</span></h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form class="form-inline">
+          <div class="form-group mx-sm-4 mb-1">
+            <select id="allbdNames" class="custom-select" width="40%">
+              {% for client in allClientActive %}
+                <option value="{{ client.0 }}">{{ client.0 }}</option>
+              {% endfor %}
+              </select>
+          </div>
+          <div class="togglebutton">
+            <label><input id="dateOption" type="checkbox"> <span class="toggle"></span> <span><strong>with date(<span class="dataOptiontext" style="color : red">OFF</span>)</strong></span></label>
+          </div>&nbsp;&nbsp;
+           <button id="btn-charge-globalStat" class="btn btn-success mb-1" type="button"><strong>Load Per 4 days</strong></button>
+           &nbsp;&nbsp;
+            <button id="btn-charge-allglobalStat" class="btn btn-info mb-1" type="button"><strong>Load all Stats</strong></button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-3">
+    <div class="card">
+      <div class="card-body">
+        <form class="form-inline">
+          <div class="togglebutton">
+            <label><input  type="checkbox" id="statsPersontage"> <span class="toggle"></span> <span><strong>show with percentage (<span class="percentageDataText" style="color : red">OFF</span>)</strong></span></label>
+          </div>&nbsp;&nbsp;&nbsp;
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-1" id="loading-card">
+    <div class="card">
+      <img class="loading"  src="{% static 'assets/img/load.gif' %}">
+    </div>
+  </div>
+</div>
+<div class="row" style="background : #fff; border-radius : 2%">
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+      <div class="card-header bg-dark">
+        <center>
+          <h4><strong>compagnes</strong></h4>
+        </center>
+      </div>
+      <div class="card-body" >
+        <center>
+          <h3  class="card-title text-dark" id="compages">{{ nbComp }}</h3>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+      <div class="card-header bg-success">
+        <center>
+          <h4><strong>Sent</strong></h4>
+        </center>
+      </div>
+      <div class="card-body">
+        <center>
+          <h3 class="card-title text-success" id="nbMailSend">{{ nbMailSend }}</h3>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+      <div class="card-header bg-info">
+        <center>
+          <h4><strong>Recieved</strong></h4>
+        </center>
+      </div>
+      <div class="card-body">
+        <center>
+          <h3 class="card-title text-info" id="nbMailRecieved">{{ nbMailRecieved }}</h3>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+      <div class="card-header" style="background : #76D7C4 ">
+        <center>
+          <h4><strong>Open</strong></h4>
+        </center>
+      </div>
+      <div class="card-body">
+        <center>
+          <h3 class="card-title"  style="color :#76D7C4" id="nbopen">{{ nbMailOpen }}</h3>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+      <div class="card-header" style="background :  #48C9B0">
+        <center>
+          <h4><strong>Clic</strong></h4>
+        </center>
+      </div>
+      <div class="card-body">
+        <center>
+          <h3 class="card-title" style="color :  #48C9B0" id="nbclic">{{ nbMailClic }}</h3>
+        </center>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-6">
+    <div class="card text-white bg-white mb-3" style="max-width: 18rem;">
+      <div class="card-header bg-danger">
+        <center>
+          <h4><strong>In Queue</strong></h4>
+        </center>
+      </div>
+      <div class="card-body">
+        <center>
+          <h3 class="card-title text-danger" id="nbnotSend">{{ nbMailNotSending }}</h3>
+        </center>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card" style="visibility : hidden">
+      <div class="card-header card-header-info card-header-text">
+        <div class="card-icon">
+          <i class="material-icons">library_books</i>
+        </div>
+        <h4 class="card-title">First Date</h4>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <input class="form-control" disabled id="firstDate" type="date">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6" >
+    <div class="card ">
+      <div class="card-header card-header-primary card-header-text">
+        <div class="card-text">
+          <h4 class="card-title">client Name : <span class="baseName">{{ bdname }}</span></h4>
+        </div>
+      </div>
+      <div class="card-body">
+        <form class="form-inline">
+          <div class="form-group mx-sm-1 mb-1">
+            <select id="typeAnalyse" class="custom-select">
+              <option value="" disabled selected>Analyse Type</option>
+              <option value="clic">Clic</option>
+              <option value="open">open</option>
+              <option value="recieved">recieved</option>
+              </select>
+          </div>
+          <div class="form-group mx-sm-1 mb-1">
+            <select id="topNumber" class="custom-select" width="10%">
+              <option value="" disabled selected>Top</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              </select>
+          </div>
+          <div class="form-group mx-sm-1 mb-1">
+            <select id="placeNumber" class="custom-select" width="30%">
+              <option value="" disabled selected>place</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+          </div>
+          <div class="form-group mx-sm-3 mb-1">
+            <input id="lowNumber" class="form-control" placeholder="low Number" type="Number" width="20%">
+          </div>
+          <div class="form-group mx-sm-1 mb-1">
+            <button id="btn-run-topStats" class="btn btn-primary mb-1" type="button"><strong>Confirm</strong></button>
+          </div>
+          <div class="form-group mx-sm-1 mb-1">
+            <button id="btn-export-csv-by-top-stat" class="btn btn-success mb-1" type="button"><strong><i class="fa fa-file-excel-o" aria-hidden="true" style="margin-bottom : 9px%"></i>&nbsp;&nbsp;&nbsp;Export CSV</strong></button>
+          </div>
+          <div class="form-group mx-sm-1 mb-1">
+            <button id="btn-send-report" class="btn btn-info mb-1" type="button"><strong><i class="fa fa-envelope" style="margin-bottom : 9px%"></i>&nbsp;&nbsp;&nbsp;Send Report</strong></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header card-header-primary card-header-icon">
+        <div class="card-icon">
+          <i class="material-icons">assignment</i>
+        </div>
+        <h3 class="card-title">Top Compane <strong><span id="txtTypeAnalyse" style="color : #154360 "></span></strong></h3>
+      </div>
+      <div class="card-body">
+        <div class="toolbar">
+          <!--        Here you can write extra buttons/actions for the toolbar              -->
+        </div>
+        <div class="material-datatables">
+          <table cellspacing="0" class="table table-striped table-no-bordered table-hover" id="datatables2" style="width:100%" width="100%">
+            <thead>
+              <tr>
+                <th>mail_sending_id</th>
+                <th>name</th>
+                <th>Date</th>
+                <th >Taux</th>
+                <th class="disabled-sorting text-right">Rank</th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>Date</th>
+                <th >Taux</th>
+                <th class="disabled-sorting text-right">Rank</th>
+              </tr>
+            </tfoot>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- end content-->
+    </div><!--  end card  -->
+  </div>
+</div>
+
+{% endblock %}
+
+{% block div %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="{% static 'assets/js/charts.js' %}" type="text/javascript"></script>
+  <script type="text/javascript">
+    $("#allbdNames").val("{{bdname}}");
+    $("#loading-card").css("visibility", "hidden");
+    bd = "{{bdname}}" ;
+
+    // csv variable
+    csv_type_stats = "";
+    csv_dict = {};
+    csv_first_Number = 0;
+    //disable btn convert
+    $("#btn-export-csv-by-top-stat").attr('disabled', true);
+    //all stats number
+    recieved = {{nbMailRecieved}} ;
+    open = {{nbMailOpen}} ;
+    clic = {{nbMailClic}} ;
+    send = {{nbMailSend}} ;
+    inqueue = {{nbMailNotSending}};
+    // search with date
+    $('#dateOption').click(function () {
+      if ($('#dateOption').prop("checked")){
+        $('.dataOptiontext').html("ON");
+        $('.dataOptiontext').css('color' , 'green');
+        $('#firstDate').attr('disabled', false);
+        $('#secondDate').attr('disabled', false);
+        $('#firstDate').attr('disabled', false);
+        $('#secondDate').attr('disabled', false);
+      }else{
+        $('.dataOptiontext').html('OFF');
+        $('.dataOptiontext').css('color' , 'red');
+        $('#firstDate').attr('disabled', true);
+        $('#secondDate').attr('disabled', true);
+        $('#firstDate').attr('disabled', true);
+        $('#secondDate').attr('disabled', true);
+      }
+    });
+    $('#statsPersontage').click(function (){
+        changeStatsGlobale (open, recieved, clic, send);
+    });
+    // stats with persontage or with Number
+    function changeStatsGlobale (open, recieved, clic, send) {
+      if ($('#statsPersontage').prop("checked")){
+        $('.percentageDataText').html("ON");
+        $('.percentageDataText').css('color' , 'green');
+        $('#nbMailRecieved').text(( recieved * 100 / send).toFixed(2)+" %");
+        $('#nbopen').text((open * 100 / recieved).toFixed(2)+" %");
+        $('#nbclic').text(( clic * 100 / recieved).toFixed(2)+" %");
+        $('#nbnotSend').text((inqueue * 100 / send).toFixed(2)+" %");
+      }else{
+        $('.percentageDataText').html('OFF');
+        $('.percentageDataText').css('color' , 'red');
+        $('#nbMailRecieved').text(recieved);
+        $('#nbopen').text(open);
+        $('#nbclic').text(clic);
+        $('#nbnotSend').text(inqueue);
+      }
+    }
+    function download_csv(dict, type, beginNumber) {
+        var csv = 'mail_sending_id,name,month/day,year,time,'+type+' rate,rank\n';
+        for (var key in dict){
+            csv += dict[key][0]+","+comp[dict[key][0]].name+","+comp[dict[key][0]].datecreation+","+dict[key][1]+","+(++beginNumber)+"\n";
+        }
+        now = new Date()
+        console.log(csv);
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = 'Analyse('+type+')-'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'.csv';
+        hiddenElement.click();
+    }
+    function bestCompagnes(dictObject, auxObjext, nbLigne, firstNumber, lowNumber){
+      dict = {};
+      for (var key in dictObject){
+        if (dictObject[key] > lowNumber)
+          dict[key] = ((dictObject[key] *100) / auxObjext[key]).toFixed(2);
+        }
+
+      var items = Object.keys(dict).map(function(key) {
+        return [key, dict[key]];
+      });
+      // Sort the array based on the second element
+      items.sort(function(first, second) {
+        return second[1] - first[1];
+      });
+      return items.slice(firstNumber, nbLigne);
+
+    }
+
+    function showObject(obj){
+      for (var key in obj){
+        console.log(obj[key][0]+" : "+obj[key][1] );
+      }
+    }
+
+    $("#loading-card").css("visibility", "hidden");
+
+    var table = $('#datatables2').DataTable({"pageLength":100});
+    // all Analyse Dict
+    dict_recived = {{dictRecieved}};
+    dict_send = {{dictSend}};
+    dict_open = {{dictOpen}};
+    dict_clic = {{dictClic}};
+    //all companes
+    comp = {}
+    {% for compagne in compagnes %}
+        comp[{{compagne.id}}] = {"name" : "{{compagne.name}}", "datecreation" : "{{compagne.datecreation}}"  };
+    {% endfor %}
+    //fn stat
+    $('#btn-run-topStats').click(function (){
+        lowNumber = 0;
+        if ($('#typeAnalyse').val() == "clic"){
+          if ($('#topNumber').val() != null ){
+            if ($('#placeNumber').val() != null){
+                if ($('#lowNumber').val() != "")
+                      lowNumber = $('#lowNumber').val();
+                first = (parseInt($('#topNumber').val()) * (parseInt($('#placeNumber').val()) - 1 ))-1;
+                if  (first < 0 ){first = 0};
+                last = first + parseInt($('#topNumber').val())
+                dict_sorting = bestCompagnes(dict_clic, dict_recived, last, first  , lowNumber);
+                chargerDataTable(dict_sorting, first );
+                $("#txtTypeAnalyse").text("("+$('#typeAnalyse').val()+")")
+                csv_type_stats = "clic";
+                csv_dict = dict_sorting;
+                csv_first_Number = first;
+                $("#btn-export-csv-by-top-stat").attr('disabled', false);
+            }else{
+              $.notify({
+                icon: 'add_alert',
+                title: '<strong>Warning</strong>',
+                message: 'choice Top number ! '
+                },
+              {
+                type: 'warning'
+              });
+            }
+          }else{
+            $.notify({
+              icon: 'add_alert',
+              title: '<strong>Warning</strong>',
+              message: 'Choice top place! '
+              },
+            {
+              type: 'warning'
+            });
+          }
+        }else if ($('#typeAnalyse').val() == "open"){
+          if ($('#topNumber').val() != null ){
+            if ($('#placeNumber').val() != null){
+                if ($('#lowNumber').val() != "")
+                      lowNumber = $('#lowNumber').val();
+                first = (parseInt($('#topNumber').val()) * (parseInt($('#placeNumber').val()) - 1 ))-1;
+                if  (first < 0 ){first = 0};
+                last = first + parseInt($('#topNumber').val())
+                dict_sorting  = bestCompagnes(dict_open, dict_recived, last, first , lowNumber);
+                chargerDataTable(dict_sorting ,first );
+                $("#txtTypeAnalyse").text("("+$('#typeAnalyse').val()+")")
+                csv_type_stats = "open";
+                csv_dict = dict_sorting;
+                csv_first_Number = first;
+                $("#btn-export-csv-by-top-stat").attr('disabled', false);
+            }else{
+              $.notify({
+                icon: 'add_alert',
+                title: '<strong>Warning</strong>',
+                message: 'choice Top number ! '
+                },
+              {
+                type: 'warning'
+              });
+            }
+          }else{
+            $.notify({
+              icon: 'add_alert',
+              title: '<strong>Warning</strong>',
+              message: 'Choice top place! '
+              },
+            {
+              type: 'warning'
+            });
+          }
+        }else if ($('#typeAnalyse').val() == "recieved"){
+          if ($('#topNumber').val() != null ){
+            if ($('#placeNumber').val() != null){
+                if ($('#lowNumber').val() != "")
+                      lowNumber = $('#lowNumber').val();
+                first = (parseInt($('#topNumber').val()) * (parseInt($('#placeNumber').val()) - 1 ))-1;
+                if  (first < 0 ){first = 0};
+                last = first + parseInt($('#topNumber').val())
+                dict_sorting = bestCompagnes(dict_recived, dict_recived, last, first  , lowNumber);
+                chargerDataTable(dict_sorting,first );
+                $("#txtTypeAnalyse").text("("+$('#typeAnalyse').val()+")")
+                csv_type_stats = "recieved";
+                csv_dict = dict_sorting;
+                csv_first_Number = first;
+                $("#btn-export-csv-by-top-stat").attr('disabled', false);
+            }else{
+              $.notify({
+                icon: 'add_alert',
+                title: '<strong>Warning</strong>',
+                message: 'choice Top number ! '
+                },
+              {
+                type: 'warning'
+              });
+            }
+          }else{
+            $.notify({
+              icon: 'add_alert',
+              title: '<strong>Warning</strong>',
+              message: 'Choice top place! '
+              },
+            {
+              type: 'warning'
+            });
+          }
+        }else{
+          $.notify({
+            icon: 'add_alert',
+            title: '<strong>Warning</strong>',
+            message: 'Chose Any Type Plz ! '
+            },
+          {
+            type: 'warning'
+          });
+        }
+    });
+    // Load Data Table with Dict
+    function chargerDataTable(dict, beginNumber){
+      table.clear();
+      for (var key in dict){
+          table.row.add([dict[key][0],comp[dict[key][0]].name, comp[dict[key][0]].datecreation, "<h4 style='color :#0B5345  '><strong>"+dict[key][1]+"</strong></h4>", '<button class="btn " type="button" style="border-radius : 150%; background : #2471A3"><border>'+(++beginNumber)+'</border><div class="ripple-container"></div></button>']);
+      }
+      table.order( [ 4, 'asc' ] ).draw();
+      $("#datatables2 tbody tr td:last-child").addClass('text-right');
+    }
+    $('#datatables2').on( 'length.dt', function ( e, settings, len ) {
+        $("#datatables2 tbody tr td:last-child").addClass('text-right');
+    } );
+
+    $("#btn-export-csv-by-top-stat").click(function(){
+      if (table.rows().count() == 0){
+        $.notify({
+          icon: 'add_alert',
+          title: '<strong>Warning</strong>',
+          message: 'table Is Empty Pliz try some transactional ! '
+          },
+        {
+          type: 'warning'
+        });
+      }else if (csv_dict == {}) {
+        $.notify({
+          icon: 'add_alert',
+          title: '<strong>Warning</strong>',
+          message: 'try Again Pliz loading data in table! '
+          },
+        {
+          type: 'danger'
+        });
+        $("#btn-export-csv-by-top-stat").attr('disabled', true);
+      }else{
+          download_csv(csv_dict, csv_type_stats, csv_first_Number);
+      }
+
+    });
+
+</script>
+{% endblock %}

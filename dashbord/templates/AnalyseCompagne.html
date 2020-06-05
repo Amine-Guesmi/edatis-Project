@@ -80,7 +80,7 @@
   </div>
   <div class="col-md-4">
     <div class="card">
-      <div class="card-header card-header-icon card-header-rose">
+      <div class="card-header card-header-icon card-header-warning">
         <div class="card-icon">
           <i class="material-icons">pie_chart</i>
         </div>
@@ -105,8 +105,8 @@
   </div>
   <div class="col-md-4">
     <div class="card">
-      <div class="card-header card-header-icon card-header-rose">
-        <div class="card-icon">
+      <div class="card-header card-header-icon card-header" >
+        <div class="card-icon" style="background : #1B4F72">
           <i class="material-icons">pie_chart</i>
         </div>
         <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-devices-open-clic" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
@@ -177,15 +177,6 @@
               </tr>
             </tfoot>
             <tbody>
-              <tr>
-                <td><button class="btn btn-info" type="button">Opened</button></td>
-                <td>02-25-2016 06:26:16 pm</td>
-                <td>Confirm Your Upcomi...</td>
-                <td>test@test.com</td>
-                <td>test2@test.com</td>
-                <td>Confirmation SMTP</td>
-                <td class="text-right"><button class="btn btn-warning" type="button">detail</button></td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -214,9 +205,9 @@
       $(".loading").css("visibility", "hidden");
       mail_sending_id = " {{ mail_sending_id }} ";
    	  bdname = "{{ bdname }}";
-      chart_send_Recieved = loadChart( {{ chart_sending_abotie }}, ["#4CAF50", "#E74C3C"], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'pie');
-      chart_open_clic = loadChart( {{ chart_open_clic }}, ["#4CAF50", "#E74C3C"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'pie');
-      chart_open_clic_devices = loadChart( {{ chart_devices_clic }}, ["#4CAF50", "#E74C3C", "#363636"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'pie');
+      chart_send_Recieved = loadChart( {{ chart_sending_abotie }}, ["#884EA0", "#17A589 "], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'doughnut');
+      chart_open_clic = loadChart( {{ chart_open_clic }}, ["#154360", "#CD5C5C"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar');
+      chart_open_clic_devices = loadChart( {{ chart_devices_clic }}, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open  for Each Devices Per compagne", 'doughnut');
 
   </script>
 {% endblock %}
