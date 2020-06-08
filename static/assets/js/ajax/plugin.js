@@ -85,7 +85,7 @@ $(document).ready(function(){
         }
         charts = {"desktop_chart" : chart1, "tablet_chart" : chart2, "mobile_chart" : chart3, "devices_chart" : chart4};
         charts[obj.device+"_chart"].destroy();
-        charts[obj.device+"_chart"] = loadChart(dataSet, Attributes.color, Attributes.label, obj.device+"_chart", obj.device+" "+obj.type+" Per Contact ("+obj.mode+")", 'doughnut');
+        charts[obj.device+"_chart"] = loadChart(dataSet, Attributes.color, Attributes.label, obj.device+"_chart", obj.device+" "+obj.type+" Per Contact ("+obj.mode+")", 'doughnut', true);
         $.notify({
           icon: 'add_alert',
           title: '<strong>Succesfuly</strong>',
@@ -123,7 +123,7 @@ $(document).ready(function(){
       alert('hello3');
     }else if (btn == 'btn-open-clic-devices'){
       $('#loading-devices-open-clic').css("visibility", "visible");
-      obj = {'mail_sending_id' : mail_sending_id ,'action' : 'charge-open-clic-devices-chart', 'bdname' : bdname, 'type': $('#type-open-clic-devices').val() , 'mode' : $('#mode-open-clic-devices').val(), 'firstDate' : firstDate , 'secondDate' : secondDate }
+      obj = {'mail_sending_id' : mail_sending_id ,'action' : 'charge-open-clic-devices-chart', 'bdname' : bdname,  'mode' : $('#mode-open-clic-devices').val(), 'firstDate' : firstDate , 'secondDate' : secondDate }
     }
 
     $.ajax({
@@ -165,12 +165,13 @@ $(document).ready(function(){
           });
         }
         else if (data.error == '-1' && data.action == '0' ){
-            chart_send_Recieved.destroy();
+            chart_send_Recieved_inqueue.destroy();
             chart_open_clic.destroy();
             chart_open_clic_devices.destroy();
-            chart_send_Recieved = loadChart( data.data_sending_recieved, ["#884EA0", "#17A589 "], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'doughnut');
-            chart_open_clic = loadChart( data.data_open_clic, ["#154360", "#CD5C5C"], ["Open ", "Clic"], "open_clic", obj.type_devices+" Per compagne", 'doughnut');
-            chart_open_clic_devices = loadChart( data.data_devices_open_clic, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open / Clic for Each Devices Per compagne", 'doughnut');
+            chart_send_Recieved = loadChartMultiple( data.chart_sending, data.chart_recieved_inqueue, ["#2471A3 ", "#17A589", "#E10B0B"], ["sent ", "Recieved", 'Inqueue'], "sending_abotie", "Number Mail sending ,Recieved and Inqueue Per compagne", 'doughnut', true);
+            chart_open_clic = loadChart( data.data_open_clic, ["#154360", "#52BE80"], ["Open ", "Clic"], "open_clic", obj.type_devices+" Per compagne", 'horizontalBar', false);
+            chart_open_clic_devices = loadBarChart(["Desktop", "Tablet", "mobile"], "Open" , "Clic", data.chart_devices_open, data.chart_devices_clic, "open_clic_devices", "#3e95cd","#8e5ea2", "Stats For Ech Tyoe Of devices");
+
             $('.mail_sending_id').html(obj.mail_sending_id);
             $('#mail_sending_id').val('');
             mail_sending_id = obj.mail_sending_id;
@@ -182,13 +183,9 @@ $(document).ready(function(){
             {
               type: 'success'
             });
-        }else if (data.error == '-1' && data.action == '1' ){
+        }else if (data.error == '-1' && data.action == '3' ){
             chart_open_clic_devices.destroy();
-            if (data.open){
-              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open  for Each Devices Per compagne", 'doughnut');
-            }else{
-              chart_open_clic_devices = loadChart( data.data_devices, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", " Clic for Each Devices Per compagne", 'doughnut');
-            }
+            chart_open_clic_devices = loadBarChart(["Desktop", "Tablet", "mobile"], "Open" , "Clic", data.chart_devices_open, data.chart_devices_clic, "open_clic_devices", "#3e95cd","#8e5ea2", "Stats For Ech Tyoe Of devices");
             $.notify({
               icon: 'add_alert',
               title: '<strong>Succefully</strong>',
@@ -232,7 +229,8 @@ $(document).ready(function(){
       data : obj,
       dataType : 'json',
       success: function(data){
-        $('#'+btn).attr('disabled', false);
+        $('#btn-charge-globalStat').attr('disabled', false);
+        $('#btn-charge-allglobalStat').attr('disabled', false);
         $("#loading-card").css("visibility", "hidden");
         if (data["error"] == "-1"){
           $("#allbdNames").val(bd);

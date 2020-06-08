@@ -243,6 +243,42 @@
 			{% include "footer.html" %}
 		</div>
 	</div><!--   Core JS Files   -->
+	<div class="modal fade" id="modal-sendMail">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+				<div class="col-md-12">
+						<form method="post">
+							<div class="card">
+								<div class="card-header card-header-rose card-header-icon">
+									<div class="card-icon">
+										<i class="fa fa-envelope"></i>
+									</div>
+									<h4 class="card-title"><strong>Send Anlyse mails</strong></h4>
+								</div>
+								<br>
+								<div class="card-body">
+									<div class="form-group bmd-form-group">
+											<input type="text" placeholder="Write Mails" class="form-control tagsinput" data-role="tagsinput" data-color="info">
+									</div>
+
+									<br>
+									<div class="alert alert-danger" id="alert-errors" style="display : none" >
+										 <button aria-label="Close" class="close" data-dismiss="alert" type="button"><i class="material-icons">close</i></button>
+										 <div class="show-errors">
+										 </div>
+									</div>
+								</div>
+								<div class="modal-footer text-right">
+									<button class="btn btn-secondary" style="background: linear-gradient(60deg, #26c6da, #00acc1);color : #FFF" data-dismiss="modal" type="button"><strong>close</strong></button>&nbsp;
+									<button class="btn btn-success" type="submit"><strong>Send Mails</strong></button>
+								</div>
+							</div>
+						</form>
+				</div>
+	    </div>
+	  </div>
+	</div>
+
 	<script src="{% static 'assets/js/core/jquery.min.js' %}"></script>
 	<script src="{% static 'assets/js/core/popper.min.js' %}"></script>
 	<script src="{% static 'assets/js/core/bootstrap-material-design.min.js' %}"></script>
@@ -277,9 +313,6 @@
   <!--  Full Calendar Plugin, full documentation here: https://github.com/fullcalendar/fullcalendar    -->
 
 	<script src="{% static 'assets/js/plugins/fullcalendar.min.js' %}"></script>
-  <!-- Vector Map plugin, full documentation here: http://jvectormap.com/documentation/ -->
-
-	<script src="{% static 'assets/js/plugins/jquery-jvectormap.js' %}"></script>
   <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
 
 	<script src="{% static 'assets/js/plugins/nouislider.min.js' %}"></script>

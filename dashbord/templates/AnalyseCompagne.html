@@ -59,7 +59,7 @@
         <div class="card-icon">
           <i class="material-icons">pie_chart</i>
         </div>
-        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-mobile" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+        <h4 class="card-title">Stats global For all compane <small>-Doughnut Pie - chart</small><img class="loading" id="loading-mobile" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
       </div>
       <div class="card-body" id="mobile_container">
         <canvas height="450" id="sending_abotie" width="800"></canvas>
@@ -82,9 +82,9 @@
     <div class="card">
       <div class="card-header card-header-icon card-header-warning">
         <div class="card-icon">
-          <i class="material-icons">pie_chart</i>
+          <i class="material-icons">bar_chart</i>
         </div>
-        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-mobile" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+        <h4 class="card-title">Stats Open / clic Per compane<small>- Horizental Bar Chart</small><img class="loading" id="loading-mobile" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
       </div>
       <div class="card-body" id="mobile_container">
         <canvas height="450" id="open_clic" width="800"></canvas>
@@ -107,25 +107,16 @@
     <div class="card">
       <div class="card-header card-header-icon card-header" >
         <div class="card-icon" style="background : #1B4F72">
-          <i class="material-icons">pie_chart</i>
+          <i class="material-icons">bar_chart</i>
         </div>
-        <h4 class="card-title">Multiple Bars Chart <small>- Bar Chart</small><img class="loading" id="loading-devices-open-clic" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
+        <h4 class="card-title">Stats For Each devices <small>- Bar Chart</small><img class="loading" id="loading-devices-open-clic" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
       </div>
       <div class="card-body" id="mobile_container">
         <canvas height="450" id="open_clic_devices" width="800"></canvas>
+        <br>
       </div>
       <div class="card-footer">
-        <div class="form-group" style="width: 37%">
-          <select class="custom-select" id="type-open-clic-devices">
-            <option selected value="open">
-              open
-            </option>
-            <option value="clic">
-              clic
-            </option>
-          </select>
-        </div>&nbsp;
-        <div class="form-group" style="width: 37%">
+        <div class="form-group" style="width: 74%">
           <select class="custom-select" id="mode-open-clic-devices">
             <option selected value="Normale">
               Normale
@@ -205,9 +196,8 @@
       $(".loading").css("visibility", "hidden");
       mail_sending_id = " {{ mail_sending_id }} ";
    	  bdname = "{{ bdname }}";
-      chart_send_Recieved = loadChart( {{ chart_sending_abotie }}, ["#884EA0", "#17A589 "], ["mail sending ", "Recieved"], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'doughnut');
-      chart_open_clic = loadChart( {{ chart_open_clic }}, ["#154360", "#CD5C5C"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar');
-      chart_open_clic_devices = loadChart( {{ chart_devices_clic }}, ["#4CAF50", "#1B4F72", "#DC7633"], ["desktop", "tablet", "mobile"], "open_clic_devices", "Open  for Each Devices Per compagne", 'doughnut');
-
+      chart_send_Recieved_inqueue = loadChartMultiple({{chart_sending}},{{ chart_recieved_inqueue }}, ["#2471A3 ", "#17A589", "#E10B0B"], ["sent ", "Recieved", 'Inqueue'], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'doughnut', true);
+      chart_open_clic = loadChart( {{ chart_open_clic }}, ["#154360", "#52BE80"], ["Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar', false);
+      chart_open_clic_devices = loadBarChart(["Desktop", "Tablet", "mobile"], "Open" , "Clic", {{chart_devices_open}}, {{chart_devices_clic}}, "open_clic_devices", "#3e95cd","#8e5ea2", "Stats For Ech Tyoe Of devices");
   </script>
 {% endblock %}
