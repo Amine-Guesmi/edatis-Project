@@ -21,6 +21,22 @@ model_open_tablet = pickle.load(open('/home/hduser/machine-Leaning/open_predict_
 model_clic_desktop = pickle.load(open('/home/hduser/machine-Leaning/clic_predict_devices/ContactClasification(clic)(desktop)Tisso.pkl', 'rb'))
 model_clic_mobile = pickle.load(open('/home/hduser/machine-Leaning/clic_predict_devices/ContactClasification(clic)(mobile)Tisso.pkl', 'rb'))
 model_clic_tablet = pickle.load(open('/home/hduser/machine-Leaning/clic_predict_devices/ContactClasification(clic)(tablet)Tisso.pkl', 'rb'))
+
+#predict Model par Companes
+#send recieved Predictive
+model_sending = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/compagnie(stat-hour)(nbmailsend)Tisso.pkl', 'rb'))
+model_recieved = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/compagnie(stat-hour)(recieved)Tisso.pkl', 'rb'))
+#open clic Predictive
+model_opens = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/opens.pkl', 'rb'))
+model_clic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/compagnie(stat-hour)(clics)Tisso.pkl', 'rb'))
+#open clic with desk mobile tablet
+model_desktopopen = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/opensdesktop.pkl', 'rb'))
+model_tabletopen = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/openstablet.pkl', 'rb'))
+model_mobileopen = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/opensmobile.pkl', 'rb'))
+
+model_desktopclic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/clicsdesktop.pkl', 'rb'))
+model_tabletclic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/clicstablet.pkl', 'rb'))
+model_mobileclic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/clicsmobile.pkl', 'rb'))
 #import models
 from .models import compte, compagne, Analyse
 #Spark
@@ -116,13 +132,13 @@ def AnalysePerContact(request, bdname, mail_sending_id):
 def AnalysePerCompagne(request, bdname, mail_sending_id):
 
     statHour = spark.read.json("/dataLake/"+bdname+"/stat_hour")
-    chart_open_clic, chart_devices_clic, chart_devices_open  = [0, 0], [0, 0, 0],[0, 0, 0]
+    chart_open_clic, chart_devices_clic, chart_devices_open  = [0, 0, 0], [0, 0, 0],[0, 0, 0]
     chart_sending = [0, 0 ,0]
     chart_recieved_inqueue = [0, 0 ,0]
     for content in  statHour.where("mail_sending_id ="+str(mail_sending_id)).collect():
         #chart_open clic
-        chart_open_clic[0] += content["clics"]
-        chart_open_clic[1] += content['opens']
+        chart_open_clic[1] += content["clics"]
+        chart_open_clic[2] += content['opens']
         #chart sending abotie
         chart_sending[0] += content['nbmailsend']
         chart_recieved_inqueue[1] += content['recieved']
@@ -135,6 +151,7 @@ def AnalysePerCompagne(request, bdname, mail_sending_id):
         chart_devices_open[1]  += content['openstablet']
         chart_devices_open[2]  += content['opensmobile']
     chart_recieved_inqueue[2] = chart_sending[0] - chart_recieved_inqueue[1];
+    chart_open_clic[0] = chart_recieved_inqueue[1]
     context = {
         'pageName' : bdname+' Analyses',
         'bdname' : bdname,
@@ -201,6 +218,7 @@ def updateGraphContact(request):
         return Http404
 
 def updateGraphCompagne(request):
+    data = {}
     if request.POST.get('firstDate') == "" or request.POST.get('secondDate') == "" :
         data = {'error' : '0'}
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -212,16 +230,22 @@ def updateGraphCompagne(request):
         data = {'error' : '2'}
         return HttpResponse(json.dumps(data), content_type="application/json")
     if request.POST.get('action') == 'charge-all-charts' :
-        chart_open_clic, chart_devices_clic, chart_devices_open  = [0, 0], [0, 0, 0],[0, 0, 0]
+        chart_open_clic, chart_devices_clic, chart_devices_open  = [0, 0, 0], [0, 0, 0],[0, 0, 0]
         chart_sending = [0, 0 ,0]
         chart_recieved_inqueue = [0, 0 ,0]
         for content in  statHour.where("date >= '"+request.POST.get('firstDate')+"' AND date <= '"+request.POST.get('secondDate')+"'").collect():
             if  request.POST.get('mode_sending_recieved') == 'Normale':
                 chart_sending[0] += content['nbmailsend']
                 chart_recieved_inqueue[1] += content['recieved']
+            else:
+                chart_sending[0] += int(model_sending.predict([[content["opens"], content["recieved"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"]]])[0])
+                chart_recieved_inqueue[1] += int(model_recieved.predict([[content["nbmailsend"], content["recieved"], content["hour"], content["dayMonth"], content["dayWeek"]]])[0])
             if  request.POST.get('mode_open_clic') == 'Normale':
-                chart_open_clic[0] += content["clics"]
-                chart_open_clic[1] += content['opens']
+                chart_open_clic[1] += content["clics"]
+                chart_open_clic[2] += content['opens']
+            else:
+                chart_open_clic[1] += int(model_opens.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"]]]))
+                chart_open_clic[2] += int(model_clic.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
             if  request.POST.get('mode_open_clic_devices') == 'Normale':
                 #chart device clic
                 chart_devices_clic[0]  += content['clicsdesktop']
@@ -231,14 +255,45 @@ def updateGraphCompagne(request):
                 chart_devices_open[0]  += content['opensdesktop']
                 chart_devices_open[1]  += content['openstablet']
                 chart_devices_open[2]  += content['opensmobile']
+            else:
+                chart_devices_clic[0]  += int(model_desktopclic.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_clic[1]  += int(model_tabletclic.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_clic[2]  += int(model_desktopopen.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                #chart device open
+                chart_devices_open[0]  += int(model_desktopopen.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_open[1]  += int(model_tabletopen.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_open[2]  += int(model_mobileopen.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
         chart_recieved_inqueue[2] = chart_sending[0] - chart_recieved_inqueue[1];
-            #iCI Predective Model : Remplir list qui est vide en mode Predictive
-
+        chart_open_clic[0] = chart_recieved_inqueue[1]
         data = {'error' : '-1', 'action' : '0', 'chart_sending' : chart_sending, 'chart_recieved_inqueue' : chart_recieved_inqueue, 'data_open_clic' : chart_open_clic, 'chart_devices_clic' : chart_devices_clic, 'chart_devices_open' : chart_devices_open}
+    elif request.POST.get('action') == 'sending-recieved-inqueue' :
+        chart_sending = [0, 0 ,0]
+        chart_recieved_inqueue = [0, 0 ,0]
+        for content in  statHour.where("date >= '"+request.POST.get('firstDate')+"' AND date <= '"+request.POST.get('secondDate')+"'").collect():
+            if  request.POST.get('mode') == 'Normale':
+                chart_sending[0] += content['nbmailsend']
+                chart_recieved_inqueue[1] += content['recieved']
+            elif request.POST.get('mode') == 'Predictive':
+                chart_sending[0] += int(model_sending.predict([[content["opens"], content["recieved"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"]]])[0])
+                chart_recieved_inqueue[1] += int(model_recieved.predict([[content["nbmailsend"], content["recieved"], content["hour"], content["dayMonth"], content["dayWeek"]]])[0])
+        chart_recieved_inqueue[2] = chart_sending[0] - chart_recieved_inqueue[1];
+        data = {'error' : '-1', 'action' : '1', 'chart_sending' : chart_sending, 'chart_recieved_inqueue' : chart_recieved_inqueue,}
+    elif request.POST.get('action') == 'open-clic' :
+        chart_open_clic = [0, 0 ,0]
+        for content in  statHour.where("date >= '"+request.POST.get('firstDate')+"' AND date <= '"+request.POST.get('secondDate')+"'").collect():
+            if  request.POST.get('mode') == 'Normale':
+                chart_open_clic[0] += content['recieved']
+                chart_open_clic[1] += content["clics"]
+                chart_open_clic[2] += content['opens']
+            elif request.POST.get('mode') == 'Predictive':
+                chart_open_clic[0] += int(model_recieved.predict([[content["nbmailsend"], content["recieved"], content["hour"], content["dayMonth"], content["dayWeek"]]])[0])
+                chart_open_clic[1] += int(model_clic.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_open_clic[2] += int(model_opens.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"]]]))
+        data = {'error' : '-1', 'action' : '2', 'chart_open_clic' : chart_open_clic}
     elif request.POST.get('action') == 'charge-open-clic-devices-chart' :
-        if request.POST.get('mode') =='Normale':
-            chart_devices_clic, chart_devices_open  =[0, 0, 0],[0, 0, 0]
-            for content in  statHour.where("date >= '"+request.POST.get('firstDate')+"' AND date <= '"+request.POST.get('secondDate')+"'").collect():
+        chart_devices_clic, chart_devices_open  =[0, 0, 0],[0, 0, 0]
+        for content in  statHour.where("date >= '"+request.POST.get('firstDate')+"' AND date <= '"+request.POST.get('secondDate')+"'").collect():
+            if  request.POST.get('mode') == 'Normale':
                 #chart device clic
                 chart_devices_clic[0]  += content['clicsdesktop']
                 chart_devices_clic[1]  += content['clicstablet']
@@ -247,6 +302,14 @@ def updateGraphCompagne(request):
                 chart_devices_open[0]  += content['opensdesktop']
                 chart_devices_open[1]  += content['openstablet']
                 chart_devices_open[2]  += content['opensmobile']
+            else:
+                chart_devices_clic[0]  += int(model_desktopclic.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_clic[1]  += int(model_tabletclic.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_clic[2]  += int(model_desktopopen.predict([[content["nbmailsend"], content["recieved"], content["clics"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                #chart device open
+                chart_devices_open[0]  += int(model_desktopopen.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_open[1]  += int(model_tabletopen.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
+                chart_devices_open[2]  += int(model_mobileopen.predict([[content["nbmailsend"], content["recieved"], content["opens"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"] ]]))
             data = {'error' : '-1', 'action' : '3', 'chart_devices_clic' : chart_devices_clic, 'chart_devices_open' : chart_devices_open }
         else:
             pass
@@ -255,9 +318,13 @@ def updateGraphCompagne(request):
 def globalStat(request, bdname):
     nbComp = 0
     compagnes = []
-    for content in spark.read.json("/dataLake/"+bdname+"/mail_sending").select('id', 'name', 'datecreation', "finish").distinct().collect():
-        compagnes.append(compagne(content["id"], content["name"], content["datecreation"], content["finish"]))
+    stathour = spark.read.json("/dataLake/"+bdname+"/stat_hour")
+    mail_sending = spark.read.json("/dataLake/"+bdname+"/mail_sending")
+    lstcompIds = []
+    for content in mail_sending.join(stathour, mail_sending.id == stathour.mail_sending_id).select('mail_sending_id', 'name', 'datecreation', "finish").distinct().collect():
+        compagnes.append(compagne(content["mail_sending_id"], content["name"], content["datecreation"], content["finish"]))
         nbComp += 1
+        lstcompIds.append(content["mail_sending_id"])
 
 
     nbMailRecieved, nbMailSend , nbMailClic, nbMailOpen, nbMailClic = 0, 0 ,0 ,0, 0
@@ -268,7 +335,7 @@ def globalStat(request, bdname):
     dictRecieved = {}
     dictSend = {}
     devicesDict = {"clic" : [0, 0, 0], "open" : [0, 0, 0]}
-    for content in  df_globalStat.collect():
+    for content in  df_globalStat.where(df_globalStat["mail_sending_id"].isin(lstcompIds)).collect():
             if content['volumerecieved'] is not None and content['volumesend'] is not None:
                 nbMailRecieved += content['volumerecieved']
                 #dict Of Recieved
@@ -366,11 +433,13 @@ def updateStatsPerDate(request):
                 nbday = 30
             if  request.POST.get("withCompanes") == "1":
                 lstCompanes = list(request.POST.get("companes").split(","))
+                print(lstCompanes ,df_stathour.agg(_max("date").alias("date")).collect()[0]["date"])
                 maxDateInStatHour =  (datetime.datetime.strptime(df_stathour.where(df_stathour["mail_sending_id"].isin(lstCompanes)).agg(_max("date").alias("date")).collect()[0]["date"], "%Y-%m-%d") - datetime.timedelta(days=nbday)).strftime("%Y-%m-%d")
                 df_stats =  df_stathour.where(df_stathour["mail_sending_id"].isin(lstCompanes)).where("date >'"+maxDateInStatHour+"'").groupBy(year("date").alias("year"), month("date").alias("month"), dayofmonth("date").alias("day")).agg(_sum("opens").alias("opens"),_sum("clics").alias("clics"),_sum("recieved").alias("recieved")).orderBy("year", "month", "day")
             else:
                 maxDateInStatHour =  (datetime.datetime.strptime(df_stathour.agg(_max("date").alias("date")).collect()[0]["date"], "%Y-%m-%d") - datetime.timedelta(days=nbday)).strftime("%Y-%m-%d")
                 df_stats =  df_stathour.where("date >'"+maxDateInStatHour+"'").groupBy(year("date").alias("year"), month("date").alias("month"), dayofmonth("date").alias("day")).agg(_sum("opens").alias("opens"),_sum("clics").alias("clics"),_sum("recieved").alias("recieved")).orderBy("year", "month", "day")
+
             for content in df_stats.collect():
                 statsPerDate["dates"].append(str(content["day"])+" "+calendar.month_name[content["month"]])
                 statsPerDate["clic"].append(content["clics"])
@@ -393,5 +462,10 @@ def updateStatsPerDate(request):
     elif  request.POST.get("etat") == "2" :
         pass
     return HttpResponse(json.dumps(statsPerDate), content_type="application/json")
+
+def recommandation(request):
+    context = {}
+    return render(request, 'recommandation.html', context)
+
 def test(request):
     return render(request, 'error.html')

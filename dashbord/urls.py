@@ -11,6 +11,7 @@ urlpatterns = [
     path('<str:bdname>/<int:mail_sending_id>/contact', views.AnalysePerContact, name='AnalysePerContact'),
     path('<str:bdname>/<int:mail_sending_id>/compagne', views.AnalysePerCompagne, name='AnalysePerCompagne'),
     path('users', views.allUsers, name='allUsers'),
+    path('recommandation', views.recommandation, name='recommandation'),
     path('test', views.test, name='test'),
     #ajax function
     path('analyse/contact', views.updateGraphContact, name='updateGraphContact'),

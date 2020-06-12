@@ -1,0 +1,360 @@
+{% extends 'dashbord_elements/base.html' %}
+{% load static %}
+{% block body %}
+<div class="row">
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-warning card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">weekend</i>
+					</div>
+					<p class="card-category">All companes Created</p>
+					<h3 class="card-title">5</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons text-danger">warning</i> <a href="#pablo">from 2020-05-30 to 2020-06-10</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-rose card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">equalizer</i>
+					</div>
+					<p class="card-category">Clic</p>
+					<h3 class="card-title">75.521</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">local_offer</i> Clic for last compane created
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-success card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">store</i>
+					</div>
+					<p class="card-category">Open</p>
+					<h3 class="card-title">34,245</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">date_range</i> Open for last compane created
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-6 col-sm-6">
+			<div class="card card-stats">
+				<div class="card-header card-header-info card-header-icon">
+					<div class="card-icon">
+						<i class="fa fa-twitter"></i>
+					</div>
+					<p class="card-category">Recieved</p>
+					<h3 class="card-title">+245</h3>
+				</div>
+				<div class="card-footer">
+					<div class="stats">
+						<i class="material-icons">update</i> Recieved for last compane created
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 ml-auto mr-auto">
+			<div class="page-categories">
+				<ul class="nav nav-pills nav-pills-warning nav-pills-icons justify-content-center" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#link7" role="tablist"><i class="material-icons">queue</i> companie mailing</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#link8" role="tablist"><i aria-hidden="true" class="fa fa-history"></i> Predictive Companes</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#link9" role="tablist"><i class="material-icons">insert_chart</i> analysis Per date</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#link10" role="tablist"><i class="material-icons">pie_chart</i> global analysis</a>
+					</li>
+				</ul>
+				<div class="tab-content tab-space tab-subcategories">
+					<div class="tab-pane" id="link7">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header card-header-rose card-header-icon">
+										<div class="card-icon">
+											<i class="material-icons">mail_outline</i>
+										</div>
+										<h4 class="card-title">Recomondation Form</h4>
+									</div>
+									<div class="card-body">
+										<form action="#" method="#">
+											<div class="form-group">
+												<label class="bmd-label-floating" for="exampleEmail">Compane Name</label> <input class="form-control" id="exampleEmail" type="email">
+											</div>
+											<div class="form-group">
+												<label class="bmd-label-floating" for="examplePass">Number Mail Send</label> <input class="form-control" id="examplePass" type="number">
+											</div>
+											<div class="form-check">
+												<label class="form-check-label"><input class="form-check-input" type="checkbox" value=""> Save Result <span class="form-check-sign"><span class="check"></span></span></label>
+											</div>
+										</form>
+									</div>
+									<div class="card-footer">
+										<button class="btn btn-fill btn-rose" type="submit">Submit</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header card-header-text">
+										<div class="card-icon" style="background: #2E86C1">
+											<i class="material-icons">today</i>
+										</div>
+										<h4 class="card-title">Data Send</h4>
+									</div>
+									<div class="card-body">
+										<div class="form-group">
+											<input class="form-control datetimepicker" type="date" value="11/06/2018">
+										</div>
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-header card-header-text">
+										<div class="card-icon" style="background: #17A589">
+											<i class="material-icons">today</i>
+										</div>
+										<h4 class="card-title">Time Send</h4>
+									</div>
+									<div class="card-body">
+										<div class="form-group">
+											<input class="form-control datetimepicker" type="time" value="11/06/2018">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane active" id="link8">
+						<div class="row">
+							<div class="col-md-3">
+								<div class="card card-product">
+									<div class="card-header text-white" style="background: #154360">
+										<center>
+											<h4><strong>Compaine 1</strong></h4>
+										</center>
+									</div>
+									<div class="card-body">
+										<h4 class="card-title"><a href="#pablo">Cozy 5 Stars Apartment</a></h4>
+										<div class="card-description">
+											The place is close to Barceloneta Beach and bus stop just 2 min by walk and near to "Naviglio" where you can enjoy the main night life in Barcelona.
+										</div>
+									</div>
+									<div class="card-footer">
+										<div class="price">
+											<h4>2020/12/5</h4>
+										</div>
+										<div class="stats">
+											<span class="badge badge-info">details</span>&nbsp; <span class="badge badge-danger">delete</span>&nbsp; <span class="badge badge-warning">update</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card card-product">
+									<div class="card-header text-white" style="background: #154360">
+										<center>
+											<h4><strong>Compaine 1</strong></h4>
+										</center>
+									</div>
+									<div class="card-body">
+										<h4 class="card-title"><a href="#pablo">Office Studio</a></h4>
+										<div class="card-description">
+											The place is close to Metro Station and bus stop just 2 min by walk and near to "Naviglio" where you can enjoy the night life in London, UK.
+										</div>
+									</div>
+									<div class="card-footer">
+										<div class="price">
+											<h4>2021/05/05</h4>
+										</div>
+										<div class="stats">
+											<span class="badge badge-info">details</span>&nbsp; <span class="badge badge-danger">delete</span>&nbsp; <span class="badge badge-warning">update</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card card-product">
+									<div class="card-header text-white" style="background: #154360">
+										<center>
+											<h4><strong>Compaine 2</strong></h4>
+										</center>
+									</div>
+									<div class="card-body">
+										<h4 class="card-title"><a href="#pablo">Beautiful Castle</a></h4>
+										<div class="card-description">
+											The place is close to Metro Station and bus stop just 2 min by walk and near to "Naviglio" where you can enjoy the main night life in Milan.
+										</div>
+									</div>
+									<div class="card-footer">
+										<div class="price">
+											<h4>2022/05/05</h4>
+										</div>
+										<div class="stats">
+											<span class="badge badge-info">details</span>&nbsp; <span class="badge badge-danger">delete</span>&nbsp; <span class="badge badge-warning">update</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card card-product">
+									<div class="card-header text-white" style="background: #154360">
+										<center>
+											<h4><strong>Compaine 3</strong></h4>
+										</center>
+									</div>
+									<div class="card-body">
+										<h4 class="card-title"><a href="#pablo">Beautiful Castle</a></h4>
+										<div class="card-description">
+											The place is close to Metro Station and bus stop just 2 min by walk and near to "Naviglio" where you can enjoy the main night life in Milan.
+										</div>
+									</div>
+									<div class="card-footer">
+										<div class="price">
+											<h4>2023/05/05</h4>
+										</div>
+										<div class="stats">
+											<span class="badge badge-info">details</span>&nbsp; <span class="badge badge-danger">delete</span>&nbsp; <span class="badge badge-warning">update</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card card-product">
+									<div class="card-header text-white" style="background: #154360">
+										<center>
+											<h4><strong>Compaine 4</strong></h4>
+										</center>
+									</div>
+									<div class="card-body">
+										<h4 class="card-title"><a href="#pablo">Beautiful Castle</a></h4>
+										<div class="card-description">
+											The place is close to Metro Station and bus stop just 2 min by walk and near to "Naviglio" where you can enjoy the main night life in Milan.
+										</div>
+									</div>
+									<div class="card-footer">
+										<div class="price">
+											<h4>2023/05/05</h4>
+										</div>
+										<div class="stats">
+											<span class="badge badge-info">details</span>&nbsp; <span class="badge badge-danger">delete</span>&nbsp; <span class="badge badge-warning">update</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="link9">
+						<div class="row">
+							<div class="col-md-8" style="margin : 0 auto">
+								<div class="card">
+									<div class="card-header card-header-icon card-header">
+										<div class="card-icon" style="background : #1B4F72">
+											<i class="material-icons">bar_chart</i>
+										</div>
+										<h4 class="card-title">Stats For Each devices</h4>
+									</div>
+									<div class="card-body" id="mobile_container">
+										<canvas height="450" id="open_clic_devices" width="800"></canvas>
+									</div>
+									<div class="card-footer">
+										<div class="form-group" style="width: 74%">
+											<select class="custom-select" id="mode-open-clic-devices">
+												<option selected value="Normale">
+													Normale
+												</option>
+												<option value="Predictive">
+													Predictive
+												</option>
+											</select>
+										</div>&nbsp; <button class="btn btn-rose btn-load" id="btn-open-clic-devices" type="button">load</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="link10">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header card-header-icon card-header">
+										<div class="card-icon" style="background : #1B4F72">
+											<i class="material-icons">bar_chart</i>
+										</div>
+										<h4 class="card-title">Stats For Each devices</h4>
+									</div>
+									<div class="card-body" id="mobile_container">
+										<canvas height="450" id="open_clic_devices1" width="800"></canvas>
+									</div>
+									<div class="card-footer">
+										<div class="form-group" style="width: 74%">
+											<select class="custom-select" id="mode-open-clic-devices">
+												<option selected value="Normale">
+													Normale
+												</option>
+												<option value="Predictive">
+													Predictive
+												</option>
+											</select>
+										</div>&nbsp; <button class="btn btn-rose btn-load" id="btn-open-clic-devices" type="button">load</button>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-header card-header-icon card-header">
+										<div class="card-icon" style="background : #1B4F72">
+											<i class="material-icons">bar_chart</i>
+										</div>
+										<h4 class="card-title">Stats For Each devices</h4>
+									</div>
+									<div class="card-body" id="mobile_container">
+										<canvas height="450" id="open_clic_devices2" width="800"></canvas>
+									</div>
+									<div class="card-footer">
+										<div class="form-group" style="width: 74%">
+											<select class="custom-select" id="mode-open-clic-devices">
+												<option selected value="Normale">
+													Normale
+												</option>
+												<option value="Predictive">
+													Predictive
+												</option>
+											</select>
+										</div>&nbsp; <button class="btn btn-rose btn-load" id="btn-open-clic-devices" type="button">load</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock%}
+{% block div %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="{% static 'assets/js/charts.js' %}" type="text/javascript"></script>
+  <script type="text/javascript">
+    chart1 = loadChart([30, 40, 50 ], ["#52BE80", "#154360", "#3498DB "], ["sent", "recieved", "Inqueue"], "open_clic_devices1","Sent Recieved Inqueue Predictive","horizontalBar", false);
+    chart2 = loadChart([30, 40, 50 ], ["#52BE80", "#154360", "#3498DB "], ["sent", "recieved", "Inqueue"], "open_clic_devices2","Sent Recieved Inqueue Predictive","doughnut", false);
+  </script>
+{% endblock %}
