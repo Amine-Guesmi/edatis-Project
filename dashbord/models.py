@@ -1,4 +1,25 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+
+
+class recommandation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    compName = models.CharField(max_length=50)
+    sent = models.IntegerField()
+    recieved = models.IntegerField()
+    opens = models.IntegerField()
+    clics = models.IntegerField()
+    clicDesktop = models.IntegerField()
+    clictablet = models.IntegerField()
+    clicMobile = models.IntegerField()
+    openDesktop = models.IntegerField()
+    openTablet = models.IntegerField()
+    openMobile = models.IntegerField()
+    created = models.DateTimeField(default=timezone.now())
+    dateRecomendation =  models.CharField(max_length=50)
+
+
 
 class compte:
     def __init__(self, id, name, bddname, active, inscriptiondate):

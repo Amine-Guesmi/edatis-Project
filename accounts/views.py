@@ -1,3 +1,4 @@
+  # -*- coding: utf-8 -*-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
@@ -119,10 +120,10 @@ def user_activate(request, id):
     data = dict()
     user = get_object_or_404(User, id=id)
     if request.method == "POST":
+        group_obj_waiter = Group.objects.get(name='waiter')
+        group_obj_waiter.user_set.remove(user)
         group_obj = Group.objects.get(name='DataAnalyst')
-        user_group = User.groups.through.objects.get(user=user)
-        user_group.group = group_obj
-        user_group.save()
+        user.groups.add(group_ibj)
         data['form_is_valid'] = True
         data['users_list'] = render_to_string('ajax_template_accounts/users_list.html',{'users' : User.objects.all()})
     else:

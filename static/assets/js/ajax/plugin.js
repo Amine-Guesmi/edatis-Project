@@ -111,6 +111,7 @@ $(document).ready(function(){
         firstDate = $('#firstDate').val();
         secondDate = $('#secondDate').val();
       }
+      alert(bdname);
     if (btn == 'btn-charge'){
       $(".loading").css("visibility", "visible");
       obj = {'mail_sending_id' : mail_sending_id ,'action' : 'charge-all-charts', 'bdname' : bdname, 'type_devices' : $('#type-open-clic-devices').val(), 'mode_sending_recieved' : $('#mode-sending-recienved').val(), 'mode_open_clic' : $('#mode-open-clic').val(), 'mode_open_clic_devices' : $('#mode-open-clic-devices').val(), 'firstDate' : firstDate , 'secondDate' : secondDate }
@@ -137,7 +138,6 @@ $(document).ready(function(){
         $('.btn-load').attr('disabled', false);
         var   d = new Date();
         var dateAnalyse = d.getFullYear()+"/"+ (d.getMonth()+1)+"/"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds() ;
-        allLineData = mail_sending_id+","+bdname+","+dateAnalyse;
         if (data.error == '0'){
           $.notify({
             icon: 'add_alert',
@@ -169,34 +169,57 @@ $(document).ready(function(){
           });
         }
         else if (data.error == '-1' && data.action == '0' ){
+            recievedExist = false;
+            table.clear();
+            table.draw();
             chart_send_Recieved_inqueue.destroy();
             chart_open_clic.destroy();
             chart_open_clic_devices.destroy();
             chart_send_Recieved = loadChartMultiple( data.chart_sending, data.chart_recieved_inqueue, ["#2471A3 ", "#17A589", "#E10B0B"], ["sent ", "Recieved", 'Inqueue'], "sending_abotie", "Number Mail sending ,Recieved and Inqueue Per compagne", 'doughnut', true);
-            chart_open_clic = loadChart( data.data_open_clic,["#52BE80", "#154360", "#3498DB "], ["recieved", "Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar', false);
+            chart_open_clic = loadChart( data.chart_open_clic,["#52BE80", "#154360", "#3498DB "], ["recieved", "Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar', false);
             chart_open_clic_devices = loadBarChart(["Desktop", "Tablet", "mobile"], "Open" , "Clic", data.chart_devices_open, data.chart_devices_clic, "open_clic_devices", "#3e95cd","#8e5ea2", "Stats For Ech Tyoe Of devices");
 
             if (obj["mode_sending_recieved"] == "Predictive"){
-              table.row.add([mail_sending_id, bdname, dateAnalyse ,normaleCharte.chartRecieved[1],"<span>"+data.chart_recieved_inqueue[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success text-center'>Recieved</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartRecieved[2],"<span>"+data.chart_recieved_inqueue[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-danger text-center'>Inqueue</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              var sendChart1 = (data.chart_recieved_inqueue[1]>=normaleCharte.chartRecieved[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var recievedChart1 = (data.chart_recieved_inqueue[2]>=normaleCharte.chartRecieved[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              if (recievedExist == false){
+                  table.row.add([mail_sending_id, bdname, dateAnalyse ,normaleCharte.chartRecieved[1],"<span>"+data.chart_recieved_inqueue[1]+"</span>"+sendChart1 , "<span class='badge badge-success text-center'>Recieved</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                  recievedExist = true;
+              }
+              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartRecieved[2],"<span>"+data.chart_recieved_inqueue[2]+"</span>"+recievedChart1 , "<span class='badge badge-danger text-center'>Inqueue</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
             }
             if (obj["mode_open_clic"] == "Predictive"){
-              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[0],"<span>"+data.chart_open_clic[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success'>&nbsp;Recieved &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[1],"<span>"+data.chart_open_clic[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-primary'>open</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[2],"<span>"+data.chart_open_clic[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-info'>clic</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              console.log(data.chart_open_clic);
+              var recievedChart2  = (data.chart_open_clic[0] >= normaleCharte.chartOpenClic[0]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var openChart2      =  (data.chart_open_clic[1] >= normaleCharte.chartOpenClic[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var clicChart2      = (data.chart_open_clic[2] >= normaleCharte.chartOpenClic[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              if (recievedExist == false){
+                  table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[0],"<span>"+data.chart_open_clic[0]+"</span>"+recievedChart2, "<span class='badge badge-success'>&nbsp;Recieved &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                  recievedExist = true;
+              }
+              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[1],"<span>"+data.chart_open_clic[1]+"</span>"+openChart2 , "<span class='badge badge-primary'>open</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[2],"<span>"+data.chart_open_clic[2]+"</span>"+clicChart2 , "<span class='badge badge-info'>clic</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
             }
             if (obj["mode_open_clic_devices"] == "Predictive"){
-              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[0],"<span>"+data.chart_devices_open[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success'>&nbsp;Open Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[1],"<span>"+data.chart_devices_open[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-primary'>Open Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[2],"<span>"+data.chart_devices_open[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-info'>Open Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              var openDesktopchart3  =  (data.chart_devices_open[0] >= normaleCharte.chartOpenDevices[0]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var openTableteChart3  =  (data.chart_devices_open[1] >= normaleCharte.chartOpenDevices[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var openMobileChart3   =  (data.chart_devices_open[2] >= normaleCharte.chartOpenDevices[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var clicDesktopChart3  =  (data.chart_devices_clic[0] >= normaleCharte.chartClicDevices[0]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var clicTabletChart3   =  (data.chart_devices_clic[1] >= normaleCharte.chartClicDevices[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              var clicMobileChart3   =  (data.chart_devices_clic[2] >= normaleCharte.chartClicDevices[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+              //open
+              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[0],"<span>"+data.chart_devices_open[0]+"</span>"+openDesktopchart3 , "<span class='badge badge-success'>&nbsp;Open Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[1],"<span>"+data.chart_devices_open[1]+"</span>"+openTableteChart3 , "<span class='badge badge-primary'>Open Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[2],"<span>"+data.chart_devices_open[2]+"</span>"+openMobileChart3 , "<span class='badge badge-info'>Open Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
               // Clic
-              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartClicDevices[0],"<span>"+data.chart_devices_clic[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success'>&nbsp;Clic Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[1],"<span>"+data.chart_devices_clic[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-primary'>Clic Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[2],"<span>"+data.chart_devices_clic[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-info'>Clic Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartClicDevices[0],"<span>"+data.chart_devices_clic[0]+"</span>"+clicDesktopChart3 , "<span class='badge badge-success'>&nbsp;Clic Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[1],"<span>"+data.chart_devices_clic[1]+"</span>"+clicTabletChart3 , "<span class='badge badge-primary'>Clic Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+              table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[2],"<span>"+data.chart_devices_clic[2]+"</span>"+clicMobileChart3 , "<span class='badge badge-info'>Clic Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
             }
             table.draw();
             $('.mail_sending_id').html(obj.mail_sending_id);
             $('#mail_sending_id').val('');
+              //normaleCharte = {"chartSend" : data.chart_sending , "chartRecieved" : data.chart_recieved_inqueue, "chartOpenClic" : data.chart_open_clic , "chartOpenDevices" : data.chart_devices_open , "chartClicDevices" : data.chart_devices_clic};
             mail_sending_id = obj.mail_sending_id;
             $.notify({
               icon: 'add_alert',
@@ -210,14 +233,20 @@ $(document).ready(function(){
             chart_open_clic_devices.destroy();
             chart_open_clic_devices = loadBarChart(["Desktop", "Tablet", "mobile"], "Open" , "Clic", data.chart_devices_open, data.chart_devices_clic, "open_clic_devices", "#3e95cd","#8e5ea2", "Stats For Ech Tyoe Of devices");
             if (obj["mode"] == "Predictive"){
+                var openDesktopchart3  =  (data.chart_devices_open[0] >= normaleCharte.chartOpenDevices[0]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var openTableteChart3  =  (data.chart_devices_open[1] >= normaleCharte.chartOpenDevices[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var openMobileChart3   =  (data.chart_devices_open[2] >= normaleCharte.chartOpenDevices[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var clicDesktopChart3  =  (data.chart_devices_clic[0] >= normaleCharte.chartClicDevices[0]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var clicTabletChart3   =  (data.chart_devices_clic[1] >= normaleCharte.chartClicDevices[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var clicMobileChart3   =  (data.chart_devices_clic[2] >= normaleCharte.chartClicDevices[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
                 // Open
-                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[0],"<span>"+data.chart_devices_open[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success'>&nbsp;Open Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[1],"<span>"+data.chart_devices_open[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-primary'>Open Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[2],"<span>"+data.chart_devices_open[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-info'>Open Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[0],"<span>"+data.chart_devices_open[0]+"</span>"+openDesktopchart3 , "<span class='badge badge-success'>&nbsp;Open Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[1],"<span>"+data.chart_devices_open[1]+"</span>"+openTableteChart3 , "<span class='badge badge-primary'>Open Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartOpenDevices[2],"<span>"+data.chart_devices_open[2]+"</span>"+openMobileChart3 , "<span class='badge badge-info'>Open Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
                 // Clic
-                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartClicDevices[0],"<span>"+data.chart_devices_clic[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success'>&nbsp;Clic Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-                table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[1],"<span>"+data.chart_devices_clic[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-primary'>Clic Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-                table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[2],"<span>"+data.chart_devices_clic[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-info'>Clic Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname,dateAnalyse ,normaleCharte.chartClicDevices[0],"<span>"+data.chart_devices_clic[0]+"</span>"+clicDesktopChart3 , "<span class='badge badge-success'>&nbsp;Clic Desktop &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[1],"<span>"+data.chart_devices_clic[1]+"</span>"+clicTabletChart3 , "<span class='badge badge-primary'>Clic Tablet</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname,dateAnalyse,normaleCharte.chartClicDevices[2],"<span>"+data.chart_devices_clic[2]+"</span>"+clicMobileChart3 , "<span class='badge badge-info'>Clic Mobile</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
                 table.draw();
             }
             $.notify({
@@ -233,9 +262,15 @@ $(document).ready(function(){
             chart_open_clic = loadChart( data.chart_open_clic, ["#52BE80", "#154360", "#3498DB "], ["recieved", "Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar', false);
             $('#loading-open-clic').css("visibility", "hidden");
             if (obj["mode"] == "Predictive"){
-                table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[0],"<span>"+data.chart_open_clic[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success'>&nbsp;Recieved &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-                table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[1],"<span>"+data.chart_open_clic[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-primary'>open</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-                table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[2],"<span>"+data.chart_open_clic[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-info'>clic</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                var recievedChart2  = (data.chart_open_clic[0] >= normaleCharte.chartOpenClic[0]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var openChart2      =  (data.chart_open_clic[1] >= normaleCharte.chartOpenClic[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                var clicChart2      = (data.chart_open_clic[2] >= normaleCharte.chartOpenClic[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+                if (recievedExist == false){
+                    table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[0],"<span>"+data.chart_open_clic[0]+"</span>"+recievedChart2 , "<span class='badge badge-success'>&nbsp;Recieved &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                    recievedExist = true;
+                }
+                table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[1],"<span>"+data.chart_open_clic[1]+"</span> "+openChart2 , "<span class='badge badge-primary'>open</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                table.row.add([mail_sending_id, bdname, dateAnalyse,normaleCharte.chartOpenClic[2],"<span>"+data.chart_open_clic[2]+"</span>"+clicChart2 , "<span class='badge badge-info'>clic</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
                 table.draw();
             }
             $.notify({
@@ -250,10 +285,14 @@ $(document).ready(function(){
           chart_send_Recieved_inqueue.destroy();
           chart_send_Recieved = loadChartMultiple( data.chart_sending, data.chart_recieved_inqueue, ["#2471A3 ", "#17A589", "#E10B0B"], ["sent ", "Recieved", 'Inqueue'], "sending_abotie", "Number Mail sending ,Recieved and Inqueue Per compagne", 'doughnut', true);
           if (obj["mode"] == "Predictive"){
-              table.row.add([mail_sending_id, bdname, dateAnalyse ,normaleCharte.chartSend[0],"<span>"+data.chart_sending[0]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span style='margin : 0 auto' class='badge badge-info text-center'>&nbsp;Send &nbsp;</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([mail_sending_id, bdname, dateAnalyse ,normaleCharte.chartRecieved[1],"<span>"+data.chart_recieved_inqueue[1]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-success text-center'>Recieved</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.row.add([ mail_sending_id, bdname, dateAnalyse,normaleCharte.chartRecieved[2],"<span>"+data.chart_recieved_inqueue[2]+"</span> <i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>" , "<span class='badge badge-danger text-center'>Inqueue</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
-              table.draw();
+            var sendChart1 = (data.chart_recieved_inqueue[1]>=normaleCharte.chartRecieved[1]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+            var recievedChart1 = (data.chart_recieved_inqueue[2]>=normaleCharte.chartRecieved[2]) ? "<i  style='color : green; float :right' class='material-icons'>arrow_circle_up</i>":"<i  style='color : red; float :right' class='material-icons'>arrow_circle_down</i>";
+            if (recievedExist == false){
+                table.row.add([mail_sending_id, bdname, dateAnalyse ,normaleCharte.chartRecieved[1],"<span>"+data.chart_recieved_inqueue[1]+"</span>"+sendChart1 , "<span class='badge badge-success text-center'>Recieved</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+                recievedExist = true
+            }
+            table.row.add([ mail_sending_id, bdname, dateAnalyse,normaleCharte.chartRecieved[2],"<span>"+data.chart_recieved_inqueue[2]+"</span>"+recievedChart1 , "<span class='badge badge-danger text-center'>Inqueue</span>",  '<button class="btn " type="button" style="background : #EC7063">Delete<div class="ripple-container"></div></button>']);
+            table.draw();
           }
           $.notify({
             icon: 'add_alert',

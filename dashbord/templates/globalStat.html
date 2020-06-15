@@ -564,9 +564,9 @@
                     $(".btn-datatable-actions").css("visibility", "hidden");
                 else{
                   $(".btn-datatable-actions").css("visibility", "visible");
-                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val()};
+                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : lowNumber};
+                  console.log(all_analyse_result);
                 }
-                console.log(all_analyse_result);
             }else{
               $.notify({
                 icon: 'add_alert',
@@ -605,7 +605,7 @@
                     $(".btn-datatable-actions").css("visibility", "hidden");
                 else{
                   $(".btn-datatable-actions").css("visibility", "visible");
-                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val()};
+                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : 'gratest than '+lowNumber+' sents'};
                 }
             }else{
               $.notify({
@@ -645,7 +645,7 @@
                     $(".btn-datatable-actions").css("visibility", "hidden");
                 else{
                   $(".btn-datatable-actions").css("visibility", "visible");
-                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val()};
+                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : 'gratest than '+lowNumber+' sents'};
                 }
             }else{
               $.notify({

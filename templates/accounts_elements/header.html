@@ -13,6 +13,9 @@
         <li class="nav-item ">
           <a class="nav-link" href="{% url 'accounts:login' %}"><i class="material-icons">fingerprint</i> Login</a>
         </li>
+        <li class="nav-item ">
+          <a class="nav-link" href="{% url 'accounts:reset_password' %}"><i class="material-icons">no_encryption</i> Reset Password</a>
+        </li>
         {% if user.is_authenticated and request.user.groups.all.0.name ==  'waiter' %}
           <li class="nav-item ">
             <a class="nav-link" href="{% url 'accounts:logout' %}"><i class="fa fa-power-off"></i> Logout</a>

@@ -87,7 +87,7 @@
         <h4 class="card-title">Stats Open / clic Per compane<img class="loading" id="loading-open-clic" src="{% static 'assets/img/load.gif' %}" style="float: right; margin-top: -3%"></h4>
       </div>
       <div class="card-body" id="mobile_container">
-        <canvas height="450" id="open_clic" width="800"></canvas>
+        <canvas height="450"  id="open_clic" width="800"></canvas>
       </div>
       <div class="card-footer">
         <div class="form-group" style="width: 74%">
@@ -211,7 +211,7 @@
       $(".buttons-csv").css({"background" : "#4caf50", "color" : "white", "margin-left" : "1.5%"});
       $(".buttons-csv").html("<strong><i class='fa fa-file-excel-o' aria-hidden='true' style='margin-bottom : 9px%'></i> &nbsp;&nbsp;Export csv</strong>");
       // btn copy
-      $(".buttons-copy").css({"background" : "#48C9B0", "color" : "white", "margin-left" : "1.5%"});
+      $(".buttons-copy").css({"background" : "#e91e63", "color" : "white", "margin-left" : "1.5%"});
       $(".buttons-copy").html("<strong><i class='material-icons'>file_copy</i> &nbsp;&nbsp;Copy all  Data</strong>");
 
       $(".buttons-pdf").addClass("btn-datatable-actions");
@@ -235,6 +235,7 @@
       $(".loading").css("visibility", "hidden");
       mail_sending_id = " {{ mail_sending_id }} ";
    	  bdname = "{{ bdname }}";
+      recievedExist = false;
       normaleCharte = {"chartSend" : {{chart_sending}} , "chartRecieved" : {{ chart_recieved_inqueue }}, "chartOpenClic" : {{ chart_open_clic }} , "chartOpenDevices" : {{chart_devices_open}} , "chartClicDevices" : {{chart_devices_clic}}};
       chart_send_Recieved_inqueue = loadChartMultiple({{chart_sending}},{{ chart_recieved_inqueue }}, ["#2471A3 ", "#17A589", "#E10B0B"], ["sent ", "Recieved", 'Inqueue'], "sending_abotie", "Number Mail sending and Recieved Per compagne", 'doughnut', true);
       chart_open_clic = loadChart( {{ chart_open_clic }}, ["#52BE80", "#154360", "#3498DB "], ["recieved", "Open ", "Clic"], "open_clic", "Open / Clic Per compagne", 'horizontalBar', false);
@@ -243,6 +244,7 @@
 
       $('#datatables_companes_analyse').on("click", "button", function(){
         table.row($(this).parents('tr')).remove().draw(false);
+        recievedExist = false;
       });
   </script>
 {% endblock %}

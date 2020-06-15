@@ -25,7 +25,7 @@ SECRET_KEY = 'uz9x+_1p2kg-w8wyiuu*)(6g&mb^yei6v)lh3sp!rn5#tuo+bx'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.7.7', '192.168.7.40','192.168.7.49', '192.168.7.46', '127.0.0.1', 'localhost']
 
 ADMIN_ENABLED = False
 
@@ -133,3 +133,13 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+#SMTP Configuration
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'edatistn.sendmail@gmail.com'
+EMAIL_HOST_PASSWORD = 'Azerty123456789?'
