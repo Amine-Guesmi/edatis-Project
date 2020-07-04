@@ -290,7 +290,7 @@
             <button id="btn-run-topStats" class="btn btn-primary mb-1" type="button"><strong>Confirm</strong></button>
           </div>
           <div class="form-group mx-sm-1 mb-1">
-            <button id="btn-send-report"  data-toggle="modal" data-target="#modal-sendMail" class="btn btn-info mb-1" type="button"><strong><i class="fa fa-envelope" style="margin-bottom : 9px%"></i>&nbsp;&nbsp;&nbsp;Send Report</strong></button>
+            <button id="btn-send-report" class="btn btn-info mb-1" type="button"><strong><i class="fa fa-envelope" style="margin-bottom : 9px%"></i>&nbsp;&nbsp;&nbsp;Send Report</strong></button>
           </div>&nbsp;&nbsp;&nbsp;
           <div class="togglebutton">
             <label><span class="textResultAstable text-success"><strong>Result As Table </strong></span>&nbsp;&nbsp; <input id="changeResultType" type="checkbox"> <span class="toggle"></span> <span class="textResultAschart"><strong>Result As Chart</strong></span></label>
@@ -366,8 +366,8 @@
     bd = "{{bdname}}" ;
 
     // csv variable
-    analyse_Number = 0;
     all_analyse_result = {};
+    all_name_result = [];
 
     //disable btn convert
     //all stats number
@@ -443,7 +443,6 @@
     }
 
     $("#clearAllSelectedCompanes").click(function(){
-      console.log($("#allCompanes").val());
       $("#allCompanes").val([]);
       $("#allCompanes").prop('selectedIndex', -1)
     });
@@ -495,7 +494,12 @@
                                 return "Analyse_"+$('#typeAnalysePerTopCompanes').val()+" for The "+$('#placeNumber').val()+" Top "+$('#topNumber').val()+"("+date+")";
                               }, filename: function(){
                                 return "Analyse_"+$('#typeAnalysePerTopCompanes').val();
-                              }
+                              },customize: function ( doc ) {
+                                doc.content.splice( 0, 0, {
+                                margin: [ 0, 0, 0, 12 ],
+                                alignment: 'center',
+                                image: 'data:image/png;base64,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'
+                              } )}
         },
         { extend: 'csv'},
         { extend: 'copy'},
@@ -533,14 +537,11 @@
         data = [];
         colors = [];
         labels = [];
-        console.log(dict);
         for (var key in dict){
-
           data.push(parseInt(dict[key][1]));
           colors.push(allColors[key]);
           labels.push(comp[dict[key][0]].name);
         }
-        console.log(data);
         return {"data" : data, "colors" : colors, "labels" : labels};
     }
     //fn stat
@@ -564,8 +565,12 @@
                     $(".btn-datatable-actions").css("visibility", "hidden");
                 else{
                   $(".btn-datatable-actions").css("visibility", "visible");
-                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : lowNumber};
-                  console.log(all_analyse_result);
+                  all_analyse_result = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : lowNumber};
+                  all_name_result = {}
+                  for (var content in all_analyse_result["dict"]){
+                    all_analyse_result["dict"][content].push(comp[parseInt(all_analyse_result["dict"][content][0])].name);
+                    all_analyse_result["dict"][content].push(comp[parseInt(all_analyse_result["dict"][content][0])].datecreation);
+                  }
                 }
             }else{
               $.notify({
@@ -605,7 +610,11 @@
                     $(".btn-datatable-actions").css("visibility", "hidden");
                 else{
                   $(".btn-datatable-actions").css("visibility", "visible");
-                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : 'gratest than '+lowNumber+' sents'};
+                  all_analyse_result = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : lowNumber};
+                  for (var content in all_analyse_result["dict"]){
+                    all_analyse_result["dict"][content].push(comp[parseInt(all_analyse_result["dict"][content][0])].name);
+                    all_analyse_result["dict"][content].push(comp[parseInt(all_analyse_result["dict"][content][0])].datecreation);
+                  }
                 }
             }else{
               $.notify({
@@ -645,7 +654,11 @@
                     $(".btn-datatable-actions").css("visibility", "hidden");
                 else{
                   $(".btn-datatable-actions").css("visibility", "visible");
-                  all_analyse_result[analyse_Number++] = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : 'gratest than '+lowNumber+' sents'};
+                  all_analyse_result = {"dict" :dict_sorting, "top" : $('#topNumber').val(), 'num' : $('#placeNumber').val() , 'type' : $('#typeAnalysePerTopCompanes').val(), 'msg' : lowNumber};
+                  for (var content in all_analyse_result["dict"]){
+                    all_analyse_result["dict"][content].push(comp[parseInt(all_analyse_result["dict"][content][0])].name);
+                    all_analyse_result["dict"][content].push(comp[parseInt(all_analyse_result["dict"][content][0])].datecreation);
+                  }
                 }
             }else{
               $.notify({
@@ -681,7 +694,6 @@
     // Load Data Table with Dict
     function chargerDataTable(dict, beginNumber){
       table.clear();
-      console.log(dict);
       for (var key in dict){
           table.row.add([dict[key][0],comp[dict[key][0]].name, comp[dict[key][0]].datecreation, "<h4 style='color :#0B5345  '><strong>"+dict[key][1]+"</strong></h4>", '<button class="btn " type="button" style="border-radius : 150%; background : #2471A3"><border>'+(++beginNumber)+'</border><div class="ripple-container"></div></button>']);
       }

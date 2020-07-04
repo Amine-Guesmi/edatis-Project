@@ -106,7 +106,7 @@ $(document).ready(function(){
     var month = ((now.getMonth().length+1) === 1)? (now.getMonth()+1) : '0' + (now.getMonth()+1);
     var day = now.getDate();
     firstDate = '2015-05-05';
-    secondDate = now.getFullYear()+'-'+month+'-'+day;
+    secondDate = now.getFullYear()+'-'+day+'-'+month;
     if ($('#dateOption').prop("checked")){
         firstDate = $('#firstDate').val();
         secondDate = $('#secondDate').val();
@@ -320,7 +320,7 @@ $(document).ready(function(){
             obj["secondDate"] = $('#secondDate').val();
           }else{
             now = new Date()
-            var month = ((now.getMonth().length+1) === 1)? (now.getMonth()+1) : '0' + (now.getMonth()+1);
+            var month = now.getMonth()+1;
             var day = now.getDate();
             obj["firstDate"] = '2015-01-01';
             obj["secondDate"] = now.getFullYear()+'-'+month+'-'+day;
@@ -370,7 +370,49 @@ $(document).ready(function(){
     });
   };
 
+  var sendStatsMails = function(){
+    mails = "";
+    for (var i = 0; i < $(".tagsinput").val().split(',').length; i++){
+      mails += $(".tagsinput").val().split(',')[i]+",";
+    }
+    console.log(JSON.stringify(all_analyse_result));
+    $.ajax({
+      url :"/dashbord/analyse/globalStats/sendMail" ,
+      type : 'post',
+      data : {"mails" : mails.substring(0, mails.length - 1), "rates" : JSON.stringify(all_analyse_result)},
+      dataType : 'json',
+      success: function(data){
+        $.notify({
+          icon: 'add_alert',
+          title: '<strong>Succefully</strong>',
+          message: 'mail Sending successfully '
+          },
+        {
+          type: 'success'
+        });
+        $("#modal-sendMail").modal('hide');
+      }
+    });
+  }
 
+
+  //show modal Send mail
+  $("#btn-send-report").click(function(){
+    if (table.data().count() == 0 ) {
+       $.notify({
+         icon: 'add_alert',
+         title: '<strong>warning</strong>',
+         message: 'You don\'t  any data to send '
+         },
+       {
+         type: 'warning'
+       });
+    }else{
+        $("#modal-sendMail").modal('show');
+    }
+  });
+  //Send mail
+  $(".btn-sendMails").click(sendStatsMails);
   //Analyse globalStat
   $("#btn-charge-globalStat").click(updateGlobalStat);
   $("#btn-charge-allglobalStat").click(updateGlobalStat);

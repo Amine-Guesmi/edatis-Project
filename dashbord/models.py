@@ -10,16 +10,9 @@ class recommandation(models.Model):
     recieved = models.IntegerField()
     opens = models.IntegerField()
     clics = models.IntegerField()
-    clicDesktop = models.IntegerField()
-    clictablet = models.IntegerField()
-    clicMobile = models.IntegerField()
-    openDesktop = models.IntegerField()
-    openTablet = models.IntegerField()
-    openMobile = models.IntegerField()
     created = models.DateTimeField(default=timezone.now())
     dateRecomendation =  models.CharField(max_length=50)
-
-
+    hour = models.IntegerField(default=0)
 
 class compte:
     def __init__(self, id, name, bddname, active, inscriptiondate):
@@ -49,3 +42,22 @@ class Analyse:
         self.Desktop_open = Desktop_open
         self.SumAllDevicesOpen = SumAllDevicesOpen
         self.SumAllDevicesClic = SumAllDevicesClic
+class contactAnalyse:
+    def __init__(self, id, email, clic, open, bounce):
+        self.id = id
+        self.email = email
+        self.clic= clic
+        self.open =open
+        self.bounce =bounce
+class IpStats:
+    def __init__(self, email, ip, clic, open, bounce):
+        self.ip = ip
+        self.email = email
+        self.clic= clic
+        self.open =open
+        self.bounce =bounce
+class emailSend :
+    def __init__(self, name, creationDate, rate):
+        self.name = name
+        self.creationDate = creationDate
+        self.rate= rate

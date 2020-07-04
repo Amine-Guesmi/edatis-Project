@@ -1,0 +1,28 @@
+<div class="row" id="companesListe">
+  {% for recom in recommandation %}
+    <div class="col-md-3">
+      <div class="card card-product">
+        <div class="card-header text-white" style="background: #154360">
+          <center>
+            <h4><strong>Compaine ID {{recom.id}}</strong></h4>
+          </center>
+        </div>
+        <div class="card-body">
+          <h4 class="card-title"><a href="#pablo">{{recom.compName}}</a></h4>
+          <div class="card-description">
+              this Campaign was shouted on {{recom.created|date:"M d, Y"}} with {{recom.sent}} number of send.
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="price">
+            <h4>{{recom.dateRecomendation}}</h4>
+          </div>
+          <div class="stats">
+            <a class="btn-details" data-url="{% url 'edatis_dashbord:recommandationCompDetails' recom.id %}" style="cursor : pointer" ><span class="badge badge-info">details</span></a>&nbsp;
+            <a class="btn-deleteComp" data-url="{% url 'edatis_dashbord:recommandationDeleteModal' recom.id %}" style="cursor : pointer"><span class="badge badge-danger">delete</span></a>&nbsp;
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

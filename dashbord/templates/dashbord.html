@@ -118,6 +118,9 @@
                     <td>{{compte.bddname}}</td>
                     <td>{{compte.inscriptiondate}}</td>
                     <td class="text-right">
+                      <a href="{% url 'edatis_dashbord:AnalyseIps' compte.bddname %}" type="button"class="btn btn-info btn-round btn-rose" style="color : white;">
+                        <i  class="material-icons">assessment</i> <strong> Ips Stats </strong>
+                      </a>
                       <a href="{% url 'edatis_dashbord:globalStat' compte.bddname %}" type="button"class="btn btn-info btn-round" style="color : white; background : #154360">
                         <i  class="material-icons">assessment</i> <strong> Global Stat</strong>
                       </a>

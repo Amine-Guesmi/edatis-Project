@@ -102,3 +102,32 @@ function loadChartMultiple(data1, data2, color, labels, id_chart, description, c
   }
 });
 }
+function loadBarChartmultiple(labels, title1, title2, titre3, data1, data2, data3, id_chart, color1, color2, color3, description){
+  return new Chart(document.getElementById(id_chart), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: title1,
+          backgroundColor: color1,
+          data: data1
+        }, {
+          label: title2,
+          backgroundColor: color2,
+          data: data2
+        }, {
+          label: titre3,
+          backgroundColor: color3,
+          data: data3
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: description
+      }
+    }
+});
+}

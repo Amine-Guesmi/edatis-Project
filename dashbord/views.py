@@ -1,15 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 import os, subprocess, json
 from django.contrib.auth.decorators import login_required
 from accounts.decorators import unauthenticated_user, allowed_users
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
+from django.core.mail import EmailMessage,  EmailMultiAlternatives
+from django.conf import settings
 import logging
 import datetime
 import subprocess
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 import time
 import calendar
+from django.template.loader import render_to_string
 #machine leaning module
 import pickle
 #open Predict
@@ -36,13 +39,17 @@ model_mobileopen = pickle.load(open('/home/hduser/machine-Leaning/companes_Model
 model_desktopclic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/machineleraingv2Compaine/M2/clicsdesktop(x).pkl', 'rb'))
 model_tabletclic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/machineleraingv2Compaine/M2/clicstablet(x).pkl', 'rb'))
 model_mobileclic = pickle.load(open('/home/hduser/machine-Leaning/companes_Model/machineleraingv2Compaine/M2/clicsmobile(x).pkl', 'rb'))
+#recommandation opens
+model_recommandation_open = pickle.load(open('/home/hduser/machine-Leaning/recommandation/opens(Tisso).pkl', 'rb'))
 #import models
-from .models import compte, compagne, Analyse
+from .models import compte, compagne, Analyse, recommandation, contactAnalyse, IpStats, emailSend
+from .forms import recommandationForm
 #Spark
 import findspark
 import pyspark
 from pyspark.sql import *
 from pyspark.sql.functions import col, year, month, dayofmonth, dayofweek, hour, sum as _sum, max as _max, min as _min
+from django.db.models import Sum
 #spark intance / Spark context / spark Session
 findspark.init('/home/hduser/spark')
 sc = pyspark.SparkContext(appName="Edatis Anlyses")
@@ -223,7 +230,7 @@ def updateGraphCompagne(request):
     if request.POST.get('firstDate') == "" or request.POST.get('secondDate') == "" :
         data = {'error' : '0'}
         return HttpResponse(json.dumps(data), content_type="application/json")
-    if  datetime.datetime.strptime(request.POST.get('firstDate'), '%Y-%m-%d') > datetime.datetime.strptime(request.POST.get('secondDate'), '%Y-%m-%d') :
+    if  datetime.datetime.strptime(request.POST.get('firstDate'), '%Y-%d-%m') > datetime.datetime.strptime(request.POST.get('secondDate'), '%Y-%d-%m') :
         data = {'error' : '1'}
         return HttpResponse(json.dumps(data), content_type="application/json")
     statHour = spark.read.json("/dataLake/"+request.POST.get('bdname')+"/stat_hour").where("mail_sending_id="+request.POST.get('mail_sending_id'))
@@ -294,7 +301,7 @@ def updateGraphCompagne(request):
                 chart_open_clic[2] += content['opens']
             elif request.POST.get('mode') == 'Predictive':
                 chart_open_clic[0] += int(model_recieved.predict([[content["nbmailsend"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"]]])[0])
-                chart_open_clic[1] += int(model_clic.predict([[content["nbmailsend"], content["recieved"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"], content["clics"] ]]))
+                chart_open_clic[1] += int(model_clic.predict([[content["nbmailsend"], content["recieved"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"], content["opens"] ]]))
                 chart_open_clic[2] += int(model_opens.predict([[content["nbmailsend"], content["recieved"], content["month"], content["hour"], content["dayMonth"], content["dayWeek"], content["clics"]]]))
         data = {'error' : '-1', 'action' : '2', 'chart_open_clic' : chart_open_clic}
     elif request.POST.get('action') == 'charge-open-clic-devices-chart' :
@@ -439,7 +446,6 @@ def updateStatsPerDate(request):
                 nbday = 30
             if  request.POST.get("withCompanes") == "1":
                 lstCompanes = list(request.POST.get("companes").split(","))
-                print(lstCompanes ,df_stathour.agg(_max("date").alias("date")).collect()[0]["date"])
                 maxDateInStatHour =  (datetime.datetime.strptime(df_stathour.where(df_stathour["mail_sending_id"].isin(lstCompanes)).agg(_max("date").alias("date")).collect()[0]["date"], "%Y-%m-%d") - datetime.timedelta(days=nbday)).strftime("%Y-%m-%d")
                 df_stats =  df_stathour.where(df_stathour["mail_sending_id"].isin(lstCompanes)).where("date >'"+maxDateInStatHour+"'").groupBy(year("date").alias("year"), month("date").alias("month"), dayofmonth("date").alias("day")).agg(_sum("opens").alias("opens"),_sum("clics").alias("clics"),_sum("recieved").alias("recieved")).orderBy("year", "month", "day")
             else:
@@ -455,7 +461,6 @@ def updateStatsPerDate(request):
             if  request.POST.get("withCompanes") == "1":
                 lstCompanes = list(request.POST.get("companes").split(","))
                 maxDateInStatHour =  (datetime.datetime.strptime(df_stathour.where(df_stathour["mail_sending_id"].isin(lstCompanes)).agg(_max("date").alias("date")).collect()[0]["date"], "%Y-%m-%d") - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
-                print(maxDateInStatHour)
                 df_stats = df_stathour.where(df_stathour["mail_sending_id"].isin(lstCompanes)).where("date >'"+maxDateInStatHour+"'").groupBy(year("date").alias("year"), month("date").alias("month")).agg(_sum("opens").alias("opens"),_sum("clics").alias("clics"),_sum("recieved").alias("recieved")).orderBy("year", "month")
             else:
                 maxDateInStatHour =  (datetime.datetime.strptime(df_stathour.agg(_max("date").alias("date")).collect()[0]["date"], "%Y-%m-%d") - datetime.timedelta(days=180)).strftime("%Y-%m-%d")
@@ -469,9 +474,195 @@ def updateStatsPerDate(request):
         pass
     return HttpResponse(json.dumps(statsPerDate), content_type="application/json")
 
-def recommandation(request):
-    context = {}
+def getNewDataOfPredictiveComp():
+    NumberOfcomp =recommandation.objects.count()
+    if NumberOfcomp != 0:
+        recom_Analyse = recommandation.objects.aggregate(Sum('sent'), Sum('recieved'), Sum('clics'), Sum('opens'))
+        in_queue = recom_Analyse["sent__sum"] - recom_Analyse["recieved__sum"]
+        return {"recommandation" :  recommandation.objects.all(), "compNumber" : recommandation.objects.count(), "clics" : recom_Analyse["clics__sum"] , "opens" : recom_Analyse["opens__sum"] , "recieved" : recom_Analyse["recieved__sum"] , "sent" : recom_Analyse["sent__sum"] , "in_queue" : in_queue  }
+    else:
+        return {"recommandation" :  None, "compNumber" : 0, "clics" : 0 , "opens" : 0 , "recieved" : 0 , "sent" : 0 , "in_queue" : 0  }
+def recommandationFuntion(request):
+    allAnalyseDict = getNewDataOfPredictiveComp()
+    dataPerTimes = recommandation.objects.values('dateRecomendation').order_by('dateRecomendation').annotate(clics=Sum('clics'), opens=Sum('opens'), recieved=Sum('recieved'))
+    labels, clics, opens, recieved = [], [], [], []
+    for dataPerTime in dataPerTimes:
+        recieved.append(dataPerTime["recieved"])
+        clics.append(dataPerTime["clics"])
+        opens.append(dataPerTime["opens"])
+        dateRec = dataPerTime["dateRecomendation"].split("-")
+        labels.append(str(dateRec[2]+" "+(calendar.month_name[int(dateRec[1])])+" "+dateRec[0]))
+    context = {
+        'recommandation' : allAnalyseDict["recommandation"],
+        'compNumber' : allAnalyseDict["compNumber"],
+        'clics' : allAnalyseDict["clics"],
+        'opens' : allAnalyseDict["opens"],
+        'recieved' : allAnalyseDict["recieved"],
+        'sent' :  allAnalyseDict["sent"],
+        'in_queue' : allAnalyseDict["in_queue"],
+        'recievedList' : recieved,
+        'clicsList' :  clics,
+        'opensList' :  opens,
+        'labels' :  labels
+    }
     return render(request, 'recommandation.html', context)
 
+def recommandationAction(request):
+    dateCreation = datetime.datetime.strptime(request.POST.get('date'), '%Y-%m-%d')
+    recieved = int(model_recieved.predict([[request.POST.get("compSent"), dateCreation.month, request.POST.get("hour"), dateCreation.day, (dateCreation.weekday() + 1)]])[0])
+    df_globalStat = spark.read.json("/dataLake/Tisseo/mail_sending_global_stats")
+    nearnbSend = (df_globalStat.where("volumesend <= "+str(request.POST.get("compSent"))).agg(_max("volumesend").alias("nbMailSend")).collect())[0][0]
+    bestClic = (df_globalStat.where("volumesend = "+str(nearnbSend)).collect())[0][1]
+    opens = int(model_opens.predict([[request.POST.get("compSent"), recieved, dateCreation.month, request.POST.get("hour"), dateCreation.day, (int(dateCreation.weekday()) + 1), bestClic]]))
+    clics = int(model_clic.predict([[request.POST.get("compSent"), recieved, dateCreation.month, request.POST.get("hour"), dateCreation.day , (int(dateCreation.weekday()) + 1), opens ]]))
+    data = {'data_sent_recieved_inqueue' : [request.POST.get("compSent"), recieved, (int(request.POST.get("compSent")) - recieved)], "data_open_clic" : [request.POST.get("compSent"), opens, clics]}
+    if request.POST.get("databaseSave") == "1" :
+        if request.method == "POST":
+            obj = {'user' : request.user,'compName' : request.POST.get('compName'),'sent' : request.POST.get('compSent'),'recieved' : recieved,'opens' : opens,'clics' : clics,'dateRecomendation' : request.POST.get('date') ,'hour' : request.POST.get('hour')}
+            recom = recommandationForm(obj)
+            recom.save()
+            recom_Analyse = recommandation.objects.aggregate(Sum('sent'), Sum('recieved'), Sum('clics'), Sum('opens'))
+            data["sent"] = recom_Analyse["sent__sum"]
+            data["recieved"] = recom_Analyse["recieved__sum"]
+            data["clics"] = recom_Analyse["clics__sum"]
+            data["opens"] = recom_Analyse["opens__sum"]
+            data["in_queue"] = recom_Analyse["sent__sum"] - recom_Analyse["recieved__sum"]
+            data["nbComp"] = recommandation.objects.count()
+            data['comp_list'] = render_to_string('ajax_template_dashbord/listCompagnes.html',{'recommandation' : recommandation.objects.all()}, request=request)
+            dataPerTimes = recommandation.objects.values('dateRecomendation').order_by('dateRecomendation').annotate(clics=Sum('clics'), opens=Sum('opens'), recieved=Sum('recieved'))
+            labels, clicsLst, opensLst, recievedLst = [], [], [], []
+            for dataPerTime in dataPerTimes:
+                recievedLst.append(dataPerTime["recieved"])
+                clicsLst.append(dataPerTime["clics"])
+                opensLst.append(dataPerTime["opens"])
+                dateRec = dataPerTime["dateRecomendation"].split("-")
+                labels.append(str(dateRec[2]+" "+(calendar.month_name[int(dateRec[1])])+" "+dateRec[0]))
+            data["recievedLst"] = recievedLst
+            data["clicsLst"] = clicsLst
+            data["opensLst"] = opensLst
+            data["labels"] = labels
+    return HttpResponse(json.dumps(data), content_type="application/json")
+def recommandationCompDetails(request, id):
+    if request.method == "GET":
+        comp = get_object_or_404(recommandation, id=id)
+        print(comp.clics, comp.sent)
+        data= {"compName" : comp.compName, 'sent' : comp.sent, 'clics' : comp.clics, 'opens' : comp.opens, "recieved" : comp.recieved}
+        return JsonResponse(data)
+    else:
+        return Http404
+def recommandationDelete(request, id):
+    if request.method == "GET":
+        recommandation.objects.get(id=id).delete()
+        dataPerTimes = recommandation.objects.values('dateRecomendation').order_by('dateRecomendation').annotate(clics=Sum('clics'), opens=Sum('opens'), recieved=Sum('recieved'))
+        labels, clics, opens, recieved = [], [], [], []
+        for dataPerTime in dataPerTimes:
+            recieved.append(dataPerTime["recieved"])
+            clics.append(dataPerTime["clics"])
+            opens.append(dataPerTime["opens"])
+            dateRec = dataPerTime["dateRecomendation"].split("-")
+            labels.append(str(dateRec[2]+" "+(calendar.month_name[int(dateRec[1])])+" "+dateRec[0]))
+        analyseSum = getNewDataOfPredictiveComp()
+        data = {"compNumber" : analyseSum["compNumber"], "clics" : analyseSum["clics"] , "opens" : analyseSum["opens"] , "recieved" : analyseSum["recieved"] , "sent" : analyseSum["sent"] , "in_queue" : analyseSum["in_queue"],  "comp_list" : 0}
+        data["comp_list"] = render_to_string('ajax_template_dashbord/listCompagnes.html',{'recommandation' : recommandation.objects.all()}, request=request)
+        data["recievedLst"] = recieved
+        data["clicsLst"] = clics
+        data["opensLst"] = opens
+        data["labels"] = labels
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    else:
+        return Http404
+def recommandationDeleteModal(request, id):
+    if request.method == "GET":
+        data = {}
+        data['html_modal'] = render_to_string('ajax_template_dashbord/deleteComp.html',{'comp' : get_object_or_404(recommandation, id=id)}, request=request)
+        return JsonResponse(data)
+    else:
+        return Http404
+def allContact(request, bdname, mail_sending_id):
+    df_mail_sending_resum_trans = spark.read.json("/dataLake/"+bdname+"/mail_sending_resume_trans/dataAnalyse")
+    nbSent , clics, opens, bounce, contactList =0 ,0 ,0, 0, []
+    for content in df_mail_sending_resum_trans.where("mail_sending_id = "+str(mail_sending_id)).na.fill(0).collect():
+        opens +=content["open"]
+        clics +=content["clic"]
+        bounce += int(content["bounce"])
+        nbSent += 1
+        contactList.append(contactAnalyse(mail_sending_id, content["email"], content["clic"], content["open"], content["bounce"]))
+    context = {
+        "opens" : opens,
+        "clics" : clics,
+        "sent" : nbSent,
+        "recieved" : nbSent - bounce,
+        "contactList" : contactList,
+        'inqueue' : nbSent - (nbSent - bounce),
+        'numBounce' : bounce ,
+        "mail_sending_id" : mail_sending_id,
+        "dbname" : bdname
+    }
+    return render(request, "allContact.html", context)
+def AnalyseIps(request, dbname):
+    df_ip_contact = spark.read.json("/dataLake/"+dbname+"/ipContact")
+    df_ip_action = spark.read.json("/dataLake/"+dbname+"/ipActions")
+    ip_contact_dict = {"ip" : [], "nbContact" : []}
+    for content in df_ip_contact.collect():
+        PosClearIp = content["ip"].index("_",3) + 1
+        ip_contact_dict["ip"].append(content["ip"][PosClearIp:])
+        ip_contact_dict["nbContact"].append(content["nbContact"])
+    labelsList, opensList, clicsList, bounceList = [], [], [], []
+    for content in df_ip_action.collect():
+        PosClearIp = content["ip"].index("_",3) + 1
+        labelsList.append(content["ip"][PosClearIp:])
+        opensList.append(content["opens"])
+        clicsList.append(content["clics"])
+        bounceList.append(content["Bounce"])
+    numberContact, NumberIp, sumOpens, sumClics, sumBounce, sumSent = 0, 0 ,0 ,0 ,0 ,0
+    for content in spark.read.json("/dataLake/Tisseo/dataIpsGlobalStats").collect():
+        numberContact = content["NumberContact"]
+        NumberIp = content["NumbeIP"]
+        sumOpens = content["sumOpens"]
+        sumClics = content["sumClics"]
+        sumBounce = content["sumBounce"]
+        sumSent = content["sumSent"]
+    sumRecieved = sumSent - sumBounce
+
+    context = {
+        "numberContact" : numberContact,
+        "NumberIp" : NumberIp,
+        "sumOpens" : sumOpens,
+        "sumClics" : sumClics,
+        "sumBounce" : sumBounce,
+        "sumSent" : sumSent,
+        "sumRecieved" : sumRecieved ,
+        "labelsList" : labelsList ,
+        "opensList" : opensList ,
+        "clicsList" : clicsList,
+        "bounceList" : bounceList,
+        "labelsIpContact" : ip_contact_dict["ip"] ,
+        "nbContact" : ip_contact_dict["nbContact"]
+    }
+    return render(request, "IpsAnalyse.html", context)
+
+def getMailIpsStats(request):
+    df_all_analyse = spark.read.json("/dataLake/Tisseo/dataIps")
+    lstAllAnalyse = []
+    for content in df_all_analyse.collect():
+        PosClearIp = content["ip"].index("_",3) + 1
+        lstAllAnalyse.append({"email" : content["email"], "ip" : content["ip"][PosClearIp:], "clics" :  content["clics"], "opens" : content["opens"], "bounce" : content["bounce"]})
+    return JsonResponse(lstAllAnalyse, safe=False)
+def sendStatsMail(request):
+    mailList = []
+    for  content in request.POST.get("mails").split(","):
+        if (content.index("@gmail.com") != -1)  or  (content.index(".org") != -1) :
+            mailList.append(content)
+    objects =  json.loads(request.POST.get("rates"))
+    allObjects = []
+    for content in range(0, len(objects["dict"])):
+        allObjects.append(emailSend(objects["dict"][content][2],objects["dict"][content][3],objects["dict"][content][1]))
+    subject, from_email, to = 'hello', settings.EMAIL_HOST_USER , mailList
+    text_content = 'This is an important message.'
+    html_content = render_to_string("ajax_template_dashbord/sendingMail.html", {"objectEmailClassification" : allObjects, "top" : objects["top"], "type" : objects["type"], "date" : datetime.datetime.today().strftime('%Y-%m-%d')  })
+    msg = EmailMultiAlternatives(subject, text_content, from_email, to)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+    return JsonResponse({"status": True})
 def test(request):
     return render(request, 'error.html')

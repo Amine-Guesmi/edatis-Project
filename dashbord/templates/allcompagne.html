@@ -44,10 +44,10 @@
                       <td>{{compagne.id}}</td>
                       <td>{{compagne.name}}</td>
                       <td class="text-right">
-                        <a  type="button" href="{% url 'dashbord:AnalysePerContact' bdname compagne.id %}"  rel="tooltip" class="btn  btn-round" style="color : white; background : #21618C">
+                        <a  type="button" href="{% url 'edatis_dashbord:allContact' bdname compagne.id %}"  rel="tooltip" class="btn  btn-round" style="color : white; background : #21618C">
                           <i  class="material-icons">assessment</i> <strong>Contact</strong>
                         </a>
-                        <a  type="button" href="{% url 'dashbord:AnalysePerCompagne' bdname compagne.id %}"  rel="tooltip" class="btn btn-info btn-round" style="color : white">
+                        <a  type="button" href="{% url 'edatis_dashbord:AnalysePerCompagne' bdname compagne.id %}"  rel="tooltip" class="btn btn-info btn-round" style="color : white">
                           <i  class="material-icons">assessment</i> <strong> Compagne</strong>
                         </a>
                       </td>

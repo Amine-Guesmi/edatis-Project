@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    Hello Tisseo,<br>
+    the DataAalyst <strong>hduser</strong> of Edatis Sent this mail to tell you some pieces of information of the top {{top}} Company per {{type}} on {{date}}
+    <br><br><br>
+    <table border="1" width="100%">
+          <caption>Top 10 compane clic 2020</caption>
+          <tr style="background : #363636, color : #fff">
+              <th>Name</th>
+              <th>Data datecreation</th>
+              <th>Rate</th>
+          </tr>
+          {% for content in objectEmailClassification %}
+          <tr>
+            <td>{{content.name}}</td>
+            <td>{{content.creationDate}}</td>
+            <td>{{content.rate}} %</td>
+          </tr>
+          {% endfor %}
+    </table>
+    <p>If you Have Any Refound Contact us on this mail : edatistn.sendmail@edatis.org</p>
+    <br>
+    <div >
+      <img src="https://img.jobi.tn/1ae0338b-df93-0d43-a548-a3d89898facb/version/resize/300x300" width="300" alt=""><br>
+      <img src="https://lebonlogiciel.com/solution-image/hub-score/57" width="300" alt="">
+    </div>
+  </body>
+</html>

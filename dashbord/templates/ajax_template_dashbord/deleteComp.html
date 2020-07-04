@@ -1,0 +1,22 @@
+<div class="col-md-12">
+		<form class="delete-comp">
+			<div class="card">
+				<div class="card-header card-header-rose card-header-icon">
+					<div class="card-icon">
+						<i class="material-icons">mark_email_read</i>
+					</div>
+					<h4 class="card-title"><strong>Delete Compane</strong></h4>
+				</div>
+				<div class="modal-body">
+          <p class="lead">Are you sure , you want to delete <strong>{{comp.compName}}</strong></p>
+				</div>
+				<div class="modal-footer text-right">
+					<button class="btn btn-info btn-dismiss-delete"  data-dismiss="modal" type="button"><strong>close</strong></button>&nbsp;
+					<a  style="color : #fff; cursor : pointer" data-url="{% url 'edatis_dashbord:recommandationDelete' comp.id %}" class="btn btn-danger compFinalDelete" ><strong>Remove</strong></a>
+				</div>
+			</div>
+		</form>
+	</div>
+  <script>
+      
+  </script>
